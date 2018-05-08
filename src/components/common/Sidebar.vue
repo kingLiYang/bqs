@@ -51,23 +51,15 @@ export default {
         {
           icon: "el-icon-date",
           index: "3",
-          title: "表单",
+          title: "转运中心",
           subs: [
             {
               index: "baseform",
-              title: "基本表单"
+              title: "站点任务管理"
             },
             {
               index: "vueeditor",
-              title: "编辑器"
-            },
-            {
-              index: "markdown",
-              title: "markdown"
-            },
-            {
-              index: "upload",
-              title: "文件上传"
+              title: "指派任务"
             }
           ]
         },

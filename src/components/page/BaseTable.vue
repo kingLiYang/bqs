@@ -101,7 +101,7 @@ export default {
   },
   methods: {
       add(){
-          this.$router.push({ path: '/user/userAdd' });
+          this.$router.push({ path: '/userAdd' });
       },
     //   handleCurrentChange(val){
     //       this.cur_page = val;

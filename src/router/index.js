@@ -30,7 +30,7 @@ export default new Router({
                     component: resolve => require(['../components/page/Power.vue'], resolve) 
                 },
                 {
-                    path:'/user/userAdd',                                                           // 用户添加
+                    path:'/userAdd',                                                           // 用户添加
                     component: resolve => require(['../components/page/user/userAdd.vue'], resolve) 
                 },
                 {
