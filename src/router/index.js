@@ -18,12 +18,20 @@ export default new Router({
                     component: resolve => require(['../components/page/Readme.vue'], resolve)
                 },
                 {
-                    path: '/basetable',
+                    path: '/basetable',                                                             // 用户管理
                     component: resolve => require(['../components/page/BaseTable.vue'], resolve)
                 },
                 {
-                    path: '/vuetable',
+                    path: '/vuetable',                                                              // 角色管理
                     component: resolve => require(['../components/page/VueTable.vue'], resolve)     // vue-datasource组件
+                },
+                {
+                    path: '/power',                                                                 // 权限管理
+                    component: resolve => require(['../components/page/Power.vue'], resolve) 
+                },
+                {
+                    path:'/user/userAdd',                                                           // 用户添加
+                    component: resolve => require(['../components/page/user/userAdd.vue'], resolve) 
                 },
                 {
                     path: '/baseform',
