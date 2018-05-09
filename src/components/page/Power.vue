@@ -27,7 +27,7 @@
                         <td>
                             <el-button type="primary" size="small" round>添加子权限</el-button>
                             <el-button type="primary" size="small" round>添加</el-button>
-                            <el-button type="primary" size="small" round>添加</el-button>
+                            <el-button type="primary" size="small" round>删除</el-button>
                         </td>
                     </tr>
                     <template v-for="(ite,inde) in item.son">
@@ -41,7 +41,7 @@
                                 <td>
                                     <el-button type="primary" size="small" round>添加子权限</el-button>
                                     <el-button type="primary" size="small" round>添加</el-button>
-                                    <el-button type="primary" size="small" round>添加</el-button>
+                                    <el-button type="primary" size="small" round>删除</el-button>
                                 </td>
                             </tr>
                             <tr v-for="(item,ind) in ite.son">
@@ -53,7 +53,7 @@
                                 <td>
                                     <el-button type="primary" size="small" round>添加子权限</el-button>
                                     <el-button type="primary" size="small" round>添加</el-button>
-                                    <el-button type="primary" size="small" round>添加</el-button>
+                                    <el-button type="primary" size="small" round>删除</el-button>
                                 </td>
                             </tr>
                         </template>

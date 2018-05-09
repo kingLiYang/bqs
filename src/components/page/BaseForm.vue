@@ -2,80 +2,103 @@
     <div>
         <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item><i class="el-icon-date"></i> 表单</el-breadcrumb-item>
-                <el-breadcrumb-item>基本表单</el-breadcrumb-item>
+                <el-breadcrumb-item> 位置:</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
-        <div class="form-box">
-            <el-form ref="form" :model="form" label-width="80px">
-                <el-form-item label="表单名称">
-                    <el-input v-model="form.name"></el-input>
-                </el-form-item>
-                <el-form-item label="选择器">
-                    <el-select v-model="form.region" placeholder="请选择">
-                        <el-option key="bbk" label="步步高" value="bbk"></el-option>
-                        <el-option key="xtc" label="小天才" value="xtc"></el-option>
-                        <el-option key="imoo" label="imoo" value="imoo"></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="日期时间">
-                    <el-col :span="11">
-                        <el-date-picker type="date" placeholder="选择日期" v-model="form.date1" style="width: 100%;"></el-date-picker>
-                    </el-col>
-                    <el-col class="line" :span="2">-</el-col>
-                    <el-col :span="11">
-                        <el-time-picker type="fixed-time" placeholder="选择时间" v-model="form.date2" style="width: 100%;"></el-time-picker>
-                    </el-col>
-                </el-form-item>
-                <el-form-item label="选择开关">
-                    <el-switch on-text="" off-text="" v-model="form.delivery"></el-switch>
-                </el-form-item>
-                <el-form-item label="多选框">
-                    <el-checkbox-group v-model="form.type">
-                        <el-checkbox label="步步高" name="type"></el-checkbox>
-                        <el-checkbox label="小天才" name="type"></el-checkbox>
-                        <el-checkbox label="imoo" name="type"></el-checkbox>
-                    </el-checkbox-group>
-                </el-form-item>
-                <el-form-item label="单选框">
-                    <el-radio-group v-model="form.resource">
-                        <el-radio label="步步高"></el-radio>
-                        <el-radio label="小天才"></el-radio>
-                        <el-radio label="imoo"></el-radio>
-                    </el-radio-group>
-                </el-form-item>
-                <el-form-item label="文本框">
-                    <el-input type="textarea" v-model="form.desc"></el-input>
-                </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" @click="onSubmit">提交</el-button>
-                    <el-button>取消</el-button>
-                </el-form-item>
-            </el-form>
+
+        <div class="table">
+
+            <div class="divBut">
+                <el-form :inline="true" class="demo-form-inline">
+                    <el-form-item label="订单号">
+                        <el-input placeholder="请输入订单号"></el-input>
+                    </el-form-item>
+                    <el-form-item label="运单号">
+                        <el-input placeholder="请输入运单号"></el-input>
+                    </el-form-item>
+                    <el-form-item label="同城单号">
+                        <el-input placeholder="请输入同城单号"></el-input>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary">查询</el-button>
+                    </el-form-item>
+                </el-form>
+            </div>
+            <div class="crumbs" style="background: #cccccc;padding: 5px 0px;" >
+                <el-row :gutter="12">
+                    <el-col :span="22"><div class="grid-content bg-purple" style="margin:5px 0px 0px 10px;">查询结果</div></el-col>
+                    <el-col :span="2"><el-button type="primary" round @click="add()">导出</el-button></el-col>
+
+                </el-row>
+            </div>
+            <el-table :data="data" border style="width: 100%" @selection-change="handleSelectionChange" highlight-current-row
+                      @current-change="handleCurrentChange">
+                <el-table-column type="selection" width="55"></el-table-column>
+                <el-table-column type="index" label="序号"  width="80"  >
+                </el-table-column>
+                <el-table-column  label="订单号"   property="date">
+                </el-table-column>
+                <el-table-column  label="同城单号" >
+                </el-table-column>
+                <el-table-column  label="备箱" >
+                </el-table-column>
+                <el-table-column  label="接货" >
+                </el-table-column>
+                <el-table-column  label="送货" >
+                </el-table-column>
+                <el-table-column  label="收箱" >
+                </el-table-column>
+
+
+                <el-table-column label="具体信息">
+                    <template slot-scope="scope">
+                        <el-button
+
+                            @click="handleEdit(scope.$index, scope.row)"
+                            type="text"
+                            size="small">
+                            详情
+                        </el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <div class="pagination">
+                <el-pagination
+                    @current-change ="handleCurrentChange"
+                    layout="prev, pager, next"
+                    :total="1000">
+                </el-pagination>
+            </div>
         </div>
+
+
+
 
     </div>
 </template>
+<style>
 
+</style>
 <script>
     export default {
-        data: function(){
-            return {
-                form: {
-                    name: '',
-                    region: '',
-                    date1: '',
-                    date2: '',
-                    delivery: true,
-                    type: ['步步高'],
-                    resource: '小天才',
-                    desc: ''
-                }
-            }
-        },
+
         methods: {
-            onSubmit() {
-                this.$message.success('提交成功！');
+            setCurrent(row) {
+                this.$refs.singleTable.setCurrentRow(row);
+            },
+            handleCurrentChange(val) {
+                this.currentRow = val;
+            },
+            handleEdit(index, row) {
+                this.$router.push({ path: '/zyDetails' });
+            },
+        },
+        data() {
+            return {
+                data: [{
+                    date: '131111111111111',
+
+                }]
             }
         }
     }
