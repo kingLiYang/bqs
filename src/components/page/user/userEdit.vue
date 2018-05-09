@@ -1,3 +1,4 @@
+
 <template>
     <div>
       <p style="padding:0 0 10px 0;">基础信息</p>
@@ -19,9 +20,6 @@
             </el-form-item> 
           </el-row>
           <el-row>
-            <!-- <el-form-item label="所在城市">
-               <el-input></el-input>
-            </el-form-item>  -->
             <el-form-item label="公司">
               <el-select v-model="region" placeholder="请选择公司">
                 <el-option :label="item.name" :value="item.pid" v-for="(item,index) in options"></el-option>

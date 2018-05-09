@@ -1,81 +1,103 @@
 <template>
     <div>
-        <div>12123123123123</div>
-        <!-- <div class="logo">后台管理系统</div>
-        <div class="user-info">
-            <el-dropdown trigger="click" @command="handleCommand">
-                <span class="el-dropdown-link">
-                    <img class="user-logo" src="../../../static/img/img.jpg">
-                    {{username}}
-                </span>
-                <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item command="loginout">退出</el-dropdown-item>
-                </el-dropdown-menu>
-            </el-dropdown>
-        </div> -->
+         <div class="divBut">
+            <el-row>
+                <el-button type="primary" round>添加</el-button>
+            </el-row>
+        </div>
+
+        <!-- 表格 -->
+         <table style="width:100%;border:1px solid #ccc;margin:10px 0 0 0;">
+          <thead>
+            <th>序号</th>
+            <th>权限名</th>
+            <th>权限</th>
+            <th>是否为菜单</th>
+            <th style="width:255px;">操作</th>
+          </thead>
+          <tbody>
+            <template v-for="(item,index) in options">
+                <template v-if="item.son">
+                    <tr>
+                        <td>{{index+1}}</td>
+                        <td>{{item.name}}</td>
+                        <td>{{item.controller}}/{{item.action}}</td>
+                        <td v-if="item.type==1">是</td>
+                        <td v-if="item.type==0">否</td>
+                        <td>
+                            <el-button type="primary" size="small" round>添加子权限</el-button>
+                            <el-button type="primary" size="small" round>添加</el-button>
+                            <el-button type="primary" size="small" round>添加</el-button>
+                        </td>
+                    </tr>
+                    <template v-for="(ite,inde) in item.son">
+                        <template v-if="ite.son">
+                            <tr>
+                                <td>{{inde+1+index+1}}</td>
+                                <td>Ⅱ&nbsp;&nbsp; {{ite.name}}</td>
+                                <td>{{ite.controller}}/{{ite.action}}</td>
+                                <td v-if="ite.type==1">是</td>
+                                <td v-if="ite.type==0">否</td>
+                                <td>
+                                    <el-button type="primary" size="small" round>添加子权限</el-button>
+                                    <el-button type="primary" size="small" round>添加</el-button>
+                                    <el-button type="primary" size="small" round>添加</el-button>
+                                </td>
+                            </tr>
+                            <tr v-for="(item,ind) in ite.son">
+                                <td>{{inde+1+index+1+ind+1}}</td>
+                                <td>Ⅲ&nbsp;&nbsp; {{item.name}}</td>
+                                <td>{{item.controller}}/{{item.action}}</td>
+                                <td v-if="item.type==1">是</td>
+                                <td v-if="item.type==0">否</td>
+                                <td>
+                                    <el-button type="primary" size="small" round>添加子权限</el-button>
+                                    <el-button type="primary" size="small" round>添加</el-button>
+                                    <el-button type="primary" size="small" round>添加</el-button>
+                                </td>
+                            </tr>
+                        </template>
+                        
+                    </template>
+                    
+                </template>
+            </template>    
+          </tbody>
+        </table>
     </div>
 </template>
 <script>
     export default {
-        // data() {
-        //     return {
-        //         name: 'linxin'
-        //     }
-        // },
-        // computed:{
-        //     username(){
-        //         let username = localStorage.getItem('ms_username');
-        //         return username ? username : this.name;
-        //     }
-        // },
-        // methods:{
-        //     handleCommand(command) {
-        //         if(command == 'loginout'){
-        //             localStorage.removeItem('ms_username')
-        //             this.$router.push('/login');
-        //         }
-        //     }
-        // }
+        data() {
+            return {
+                name: '',
+                options:[]
+            }
+        },
+        created(){
+                let that = this;
+                this.$axios({
+                url: "api/bqs/backend/web/index.php/oauth/list",
+                method: "get",
+                data: {},
+                transformRequest: [
+                    function(data) {
+                    let ret = "";
+                    for (let it in data) {
+                        ret +=
+                        encodeURIComponent(it) + "=" + encodeURIComponent(data[it]) + "&";
+                    }
+                    return ret;
+                    }
+                ],
+                headers: { "Content-Type": "application/x-www-form-urlencoded" }
+                }).then(function(res) {
+                    that.options = res.data.data.data;
+                });
+        }
     }
 </script>
 <style scoped>
-    /* .header {
-        position: relative;
-        box-sizing: border-box;
-        width: 100%;
-        height: 70px;
-        font-size: 22px;
-        line-height: 70px;
-        color: #fff;
-    }
-    .header .logo{
-        float: left;
-        width:250px;
-        text-align: center;
-    }
-    .user-info {
-        float: right;
-        padding-right: 50px;
-        font-size: 16px;
-        color: #fff;
-    }
-    .user-info .el-dropdown-link{
-        position: relative;
-        display: inline-block;
-        padding-left: 50px;
-        color: #fff;
-        cursor: pointer;
-        vertical-align: middle;
-    }
-    .user-info .user-logo{
-        position: absolute;
-        left:0;
-        top:15px;
-        width:40px;
-        height:40px;
-        border-radius: 50%;
-    }
-    .el-dropdown-menu__item{
-        text-align: center;
-    } */
+td,th{border:solid #ccc; border-width:0px 1px 1px 0px; padding:10px 0px;text-align: center;}
+table{border:solid #ccc; border-width:1px 0px 0px 1px;border-collapse: collapse;}
 </style>

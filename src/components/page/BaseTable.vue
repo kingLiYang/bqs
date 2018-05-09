@@ -3,11 +3,10 @@
         <div class="divBut">
             <el-row>
                 <el-button type="primary" round @click="add()">添加</el-button>
-                <el-button type="primary" round>修改</el-button>
-                <el-button type="primary" round>详情</el-button>
+                <el-button type="primary" round @click='edit($event)'>修改</el-button>
                 <el-button type="primary" round>启用</el-button>
                 <el-button type="primary" round>禁用</el-button>
-                
+                <el-button type="primary" round>删除</el-button>
             </el-row>
         </div>
         <div class="divBut">
@@ -16,7 +15,7 @@
                 <el-input placeholder="请输入姓名"></el-input>
             </el-form-item>
             <el-form-item label="启用状态">
-                <el-select  placeholder="请选择启用状态">
+                <el-select  v-model="formInline"  placeholder="请选择启用状态">
                 <el-option label="审核通过" value="tongguo"></el-option>
                 <el-option label="禁用" value="jinyong"></el-option>
                 </el-select>
@@ -27,7 +26,7 @@
             </el-form>
         </div>
 
-        <el-table :data="data" border style="width: 100%" @selection-change="handleSelectionChange">
+        <el-table border style="width: 100%" @selection-change="handleSelectionChange">
             <el-table-column type="selection" width="55"></el-table-column>
             <el-table-column  label="序号">
             </el-table-column>
@@ -37,13 +36,7 @@
             </el-table-column>
             <el-table-column  label="电话" >
             </el-table-column>
-            <el-table-column  label="所在城市" >
-            </el-table-column>
-            <el-table-column  label="地理位置" >
-            </el-table-column>
-            <el-table-column  label="转运中心ID" >
-            </el-table-column>
-            <el-table-column  label="转运中心名称" >
+             <el-table-column  label="公司名称" >
             </el-table-column>
             <el-table-column  label="创建时间" >
             </el-table-column>
@@ -51,10 +44,10 @@
             </el-table-column>
         </el-table>
         <div class="pagination">
-            <el-pagination
-                    @current-change ="handleCurrentChange"
+            <el-pagination>
+                    <!-- @current-change ="handleCurrentChange"
                     layout="prev, pager, next"
-                    :total="1000">
+                    :total="1000" -->
             </el-pagination>
         </div>
     </div>
@@ -64,14 +57,14 @@
 export default {
   data() {
       return {
-          url: './static/vuetable.json',
           tableData: [],
           cur_page: 1,
           multipleSelection: [],
           select_cate: '',
           select_word: '',
           del_list: [],
-          is_search: false
+          is_search: false,
+          formInline:''
       }
   },
   created(){
@@ -102,6 +95,11 @@ export default {
   methods: {
       add(){
           this.$router.push({ path: '/userAdd' });
+      },
+      edit(e){
+          console.log(e);
+          this.$router.push({ path: '/userEdit' });
+
       },
     //   handleCurrentChange(val){
     //       this.cur_page = val;

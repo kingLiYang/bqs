@@ -34,6 +34,10 @@ export default new Router({
                     component: resolve => require(['../components/page/user/userAdd.vue'], resolve) 
                 },
                 {
+                    path: '/userEdit',                                                          // 用户修改
+                    component: resolve => require(['../components/page/user/userEdit.vue'], resolve) 
+                },
+                {
                     path: '/baseform',
                     component: resolve => require(['../components/page/BaseForm.vue'], resolve)
                 },
