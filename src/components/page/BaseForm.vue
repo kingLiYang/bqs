@@ -31,11 +31,12 @@
 
                 </el-row>
             </div>
-            <el-table :data="data" border style="width: 100%" @selection-change="handleSelectionChange">
+            <el-table :data="data" border style="width: 100%" @selection-change="handleSelectionChange" highlight-current-row
+                      @current-change="handleCurrentChange">
                 <el-table-column type="selection" width="55"></el-table-column>
-                <el-table-column  label="序号">
+                <el-table-column type="index" label="序号"  width="80"  >
                 </el-table-column>
-                <el-table-column  label="订单号">
+                <el-table-column  label="订单号"   property="date">
                 </el-table-column>
                 <el-table-column  label="同城单号" >
                 </el-table-column>
@@ -47,9 +48,19 @@
                 </el-table-column>
                 <el-table-column  label="收箱" >
                 </el-table-column>
-                <el-table-column  label="具体信息" >
-                </el-table-column>
 
+
+                <el-table-column label="具体信息">
+                    <template slot-scope="scope">
+                        <el-button
+
+                            @click="handleEdit(scope.$index, scope.row)"
+                            type="text"
+                            size="small">
+                            详情
+                        </el-button>
+                    </template>
+                </el-table-column>
             </el-table>
             <div class="pagination">
                 <el-pagination
@@ -70,13 +81,25 @@
 </style>
 <script>
     export default {
-        data: function(){
-            return {
 
-            }
-        },
         methods: {
+            setCurrent(row) {
+                this.$refs.singleTable.setCurrentRow(row);
+            },
+            handleCurrentChange(val) {
+                this.currentRow = val;
+            },
+            handleEdit(index, row) {
+                this.$router.push({ path: '/zyDetails' });
+            },
+        },
+        data() {
+            return {
+                data: [{
+                    date: '131111111111111',
 
+                }]
+            }
         }
     }
 </script>

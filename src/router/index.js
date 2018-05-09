@@ -27,15 +27,19 @@ export default new Router({
                 },
                 {
                     path: '/power',                                                                 // 权限管理
-                    component: resolve => require(['../components/page/Power.vue'], resolve) 
+                    component: resolve => require(['../components/page/Power.vue'], resolve)
                 },
                 {
                     path:'/userAdd',                                                           // 用户添加
-                    component: resolve => require(['../components/page/user/userAdd.vue'], resolve) 
+                    component: resolve => require(['../components/page/user/userAdd.vue'], resolve)
                 },
                 {
                     path: '/baseform',
                     component: resolve => require(['../components/page/BaseForm.vue'], resolve)
+                },
+                {
+                    path:'/zyDetails',                                                           // 详情
+                    component: resolve => require(['../components/page/management/zyDetails.vue'], resolve)
                 },
                 {
                     path: '/vueeditor',
