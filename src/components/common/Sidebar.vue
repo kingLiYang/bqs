@@ -45,6 +45,10 @@ export default {
             {
               index: "power",
               title: "权限管理"
+            },
+            {
+              index: "compony",
+              title: "公司管理"
             }
           ]
         },
