@@ -80,7 +80,7 @@
               node-key="o_id"
               ref="tree"
               :default-expand-all=true
-              :default-checked-keys="[42]"
+              :default-checked-keys="data3"
               :props="defaultProps">
             </el-tree>
             <span slot="footer" class="dialog-footer">
@@ -113,6 +113,7 @@ export default {
       editFormVisible:false,
       dialogVisible: false,
       arr: [],
+      arr1:[],
       form: {
         name: ""
       },
@@ -206,6 +207,8 @@ export default {
           type: "error"
         });
       } else {
+        this.arr1 = this.arr;
+        this.arr = [];
         this.dialogVisible = true;
       }
       // console.log(this.arr.join(','));
@@ -217,7 +220,7 @@ export default {
         url: "api/bqs/backend/web/index.php/role/delete",
         method: "post",
         data: {
-          id: this.arr.join(",")
+          id: this.arr1.join(",")
         },
         transformRequest: [
           function(data) {
@@ -238,6 +241,9 @@ export default {
           that.dialogVisible = false;
           that.$message("删除成功");
           that.show();
+        }else if(res.data.code == 10){
+          that.dialogVisible = false;
+          that.$message("该角色已有用户使用");
         }
       });
     },
@@ -254,10 +260,11 @@ export default {
           type: "error"
         });
       } else {
-    
+        this.arr1 = this.arr;
+        this.arr = [];
         let that = this;
         this.$axios({
-          url: `api/bqs/backend/web/index.php/role/update?id=${this.arr.join(',')}`,
+          url: `api/bqs/backend/web/index.php/role/update?id=${this.arr1.join(',')}`,
           method: "get",
           data: {},
           transformRequest: [
@@ -289,7 +296,7 @@ export default {
           url: `api/bqs/backend/web/index.php/role/update`,
           method: "post",
           data: {
-            id:this.arr.join(","),
+            id:this.arr1.join(","),
             name:this.form1.name
           },
           transformRequest: [
