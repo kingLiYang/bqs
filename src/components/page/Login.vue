@@ -5,10 +5,10 @@
       <el-input type="text" auto-complete="off" placeholder="账号" v-model="account"></el-input>
     </el-form-item>
     <el-form-item>
-      <el-input type="password" auto-complete="off" placeholder="密码" v-model="checkPass"></el-input>
+      <el-input type="password" auto-complete="off" placeholder="密码" v-model="checkPass"  @keyup.enter.native="handleSubmit2"></el-input>
     </el-form-item>
 <el-form-item style="width:100%;">
-<el-button type="primary" style="width:100%;" @click.native.prevent="handleSubmit2"  @keyup.enter="handleSubmit2" :loading="logining">登录</el-button>
+<el-button type="primary" style="width:100%;" @click.native="handleSubmit2" :loading="logining">登录</el-button>
 </el-form-item>
 </el-form>
 </template>
@@ -29,21 +29,41 @@ export default {
   methods: {
     handleSubmit2(ev) {
       // var _this = this;
-      // alert(this.checkPass);
-      this.$router.push({ path: '/readme' });
     //  this.$message({
     //       message: '恭喜你，这是一条成功消息',
     //       type: 'success'
     //     });
-    // this.$axios({
-    //     method:'post',
-    //     url:'',
-    //     data:{}
-    // }).then((res)=>{
-    //     console.log(res);
-    // }).catch((err)=>{
-    //     console.log(err);
-    // })
+    
+let that = this;
+      this.$axios({
+        url: "api/bqs/backend/web/index.php/login/login",
+        method: "post",
+        data: {
+          username: this.account,
+          pwd:this.checkPass
+        },
+        transformRequest: [
+          function(data) {
+            let ret = "";
+            for (let it in data) {
+              ret +=
+                encodeURIComponent(it) +
+                "=" +
+                encodeURIComponent(data[it]) +
+                "&";
+            }
+            return ret;
+          }
+        ],
+        headers: { "Content-Type": "application/x-www-form-urlencoded" }
+      }).then(function(res) {
+        if (res.data.code == "0") {
+          window.sessionStorage.setItem('username',that.account);
+          that.$router.push({path:'/home',query:{menu:res.data.data.menu}});
+
+        }
+      });
+
 
 
 

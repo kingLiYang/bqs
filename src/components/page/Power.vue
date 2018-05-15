@@ -187,7 +187,8 @@ export default {
           controller: this.form.con,
           name: this.form.name,
           p_path: this.p_id,
-          type: this.form.region
+          type: this.form.region,
+          icon: this.form.icon
         },
         transformRequest: [
           function(data) {
@@ -243,8 +244,7 @@ export default {
           that.form.con = res.data.data.controller;
           that.form.act = res.data.data.action;
           that.dialogFormVisibleEdit = true;
-
-          // that.form.icon = res.data.data.icon;
+          that.form.icon = res.data.data.icon;
         }
       });
     },
@@ -258,7 +258,8 @@ export default {
           controller: this.form.con,
           name: this.form.name,
           type: this.form.region,
-          id: this.p_id
+          id: this.p_id,
+          icon: this.form.icon
         },
         transformRequest: [
           function(data) {

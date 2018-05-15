@@ -11,7 +11,37 @@
             </div>
         </div>
             <!-- 表格 -->
-         <table style="width:100%;border:1px solid #ccc;margin:10px 0 0 0;">
+            <el-table
+              border
+              :data="options"
+              style="width: 100%;"
+              @selection-change="handleSelectionChange">
+              <el-table-column
+                type="selection">
+              </el-table-column>
+              <el-table-column
+                type="index"
+                width="200px"
+                label="序号">
+              </el-table-column>
+              <el-table-column
+                prop="name"
+                label="角色">
+              </el-table-column>
+              <el-table-column
+                label="添加时间">
+                <template slot-scope="scope">{{ scope.row.addtime | formatDate}}</template>
+              </el-table-column>
+              <el-table-column
+                label="操作">
+                <template slot-scope="scope">
+                <el-button type="danger" size="small" round @click.native.prevent="delChild(scope.row)">分配权限</el-button>
+
+                </template>
+                  
+              </el-table-column>
+            </el-table>
+         <!-- <table style="width:100%;border:1px solid #ccc;margin:10px 0 0 0;">
           <thead>
             <th><input type="checkbox" @click="allChecked()" v-model="checkedAll"></th>
             <th>序号</th>
@@ -32,7 +62,7 @@
                     </tr>        
             </template>    
           </tbody>
-        </table>
+        </table> -->
  <!-- 添加   弹框 -->
         <el-dialog title="添加角色" :visible.sync="dialogFormVisible">
         <el-form :model="form">
@@ -113,7 +143,6 @@ export default {
       editFormVisible:false,
       dialogVisible: false,
       arr: [],
-      arr1:[],
       form: {
         name: ""
       },
@@ -172,33 +201,7 @@ export default {
         }
       });
     },
-    allChecked(e) {
-      // 全选
-      this.arr = [];
-      if (this.checkedAll) {
-        this.isChecked = false;
-      } else {
-        this.isChecked = true;
-        this.options.forEach((item, index) => {
-          this.arr.push(item.r_id);
-        });
-      }
-    },
-    sel(e) {
-      // 点击 列表 的 多选框
-      let id = e.currentTarget.getAttribute("data_id");
-      let a = false;
-      for (let i = 0; i < this.arr.length; i++) {
-        if (id == this.arr[i]) {
-          this.arr.splice(i, 1);
-          a = true;
-          break;
-        }
-      }
-      if (!a) {
-        this.arr.push(id);
-      }
-    },
+
     del() {
       // 删除   弹框
       if (this.arr.length == 0) {
@@ -207,8 +210,6 @@ export default {
           type: "error"
         });
       } else {
-        this.arr1 = this.arr;
-        this.arr = [];
         this.dialogVisible = true;
       }
       // console.log(this.arr.join(','));
@@ -220,7 +221,7 @@ export default {
         url: "api/bqs/backend/web/index.php/role/delete",
         method: "post",
         data: {
-          id: this.arr1.join(",")
+          id: this.arr.join(",")
         },
         transformRequest: [
           function(data) {
@@ -260,11 +261,10 @@ export default {
           type: "error"
         });
       } else {
-        this.arr1 = this.arr;
-        this.arr = [];
         let that = this;
+        alert(this.arr.join(','));
         this.$axios({
-          url: `api/bqs/backend/web/index.php/role/update?id=${this.arr1.join(',')}`,
+          url: `api/bqs/backend/web/index.php/role/update?id=${this.arr.join(',')}`,
           method: "get",
           data: {},
           transformRequest: [
@@ -296,7 +296,7 @@ export default {
           url: `api/bqs/backend/web/index.php/role/update`,
           method: "post",
           data: {
-            id:this.arr1.join(","),
+            id:this.arr.join(","),
             name:this.form1.name
           },
           transformRequest: [
@@ -321,9 +321,16 @@ export default {
           }
         });
     },
-    delChild(e) {
+     handleSelectionChange(val) {
+      // 全选 ID
+      this.arr = [];
+      val.forEach((item,index)=>{
+        this.arr.push(item.r_id);
+      })
+    },
+    delChild(rows) {
       // 分配权限  默认
-      this.id = e.currentTarget.getAttribute("data_id");
+      this.id = rows.r_id;
       let that = this;
       this.$axios({
         url: "api/bqs/backend/web/index.php/role/get_role_oauth",
@@ -394,23 +401,11 @@ export default {
 </script>
 
 <style scoped>
-td,
-th {
-  border: solid #ccc;
-  border-width: 0px 1px 1px 0px;
-  padding: 10px 0px;
-  text-align: center;
-  width: 20%;
-}
 
-table {
-  border: solid #ccc;
-  border-width: 1px 0px 0px 1px;
-  border-collapse: collapse;
-}
 .divBut {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  margin: 0 0 10px 0;
 }
 </style>
