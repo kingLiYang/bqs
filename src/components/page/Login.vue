@@ -2,7 +2,7 @@
    <el-form :rules="rules2" label-position="left" label-width="0px" class="demo-ruleForm card-box loginform">
     <h3 class="title">冰骑士后台</h3>
     <el-form-item>
-      <el-input type="text" auto-complete="off" placeholder="账号" v-model="account"></el-input>
+      <el-input type="text" auto-complete="off" placeholder="账号1" v-model="account"></el-input>
     </el-form-item>
     <el-form-item>
       <el-input type="password" auto-complete="off" placeholder="密码" v-model="checkPass"  @keyup.enter.native="handleSubmit2"></el-input>
@@ -28,15 +28,9 @@ export default {
   },
   methods: {
     handleSubmit2(ev) {
-      // var _this = this;
-    //  this.$message({
-    //       message: '恭喜你，这是一条成功消息',
-    //       type: 'success'
-    //     });
-    
-let that = this;
+      let that = this;
       this.$axios({
-        url: "api/bqs/backend/web/index.php/login/login",
+        url: this.URL_API+"/bqs/backend/web/index.php/login/login",
         method: "post",
         data: {
           username: this.account,
@@ -59,14 +53,18 @@ let that = this;
       }).then(function(res) {
         if (res.data.code == "0") {
           window.sessionStorage.setItem('username',that.account);
-          that.$router.push({path:'/home',query:{menu:res.data.data.menu}});
+          window.sessionStorage.setItem('token',res.data.data.token);
+          window.sessionStorage.setItem('items',JSON.stringify(res.data.data.menu));
+          that.$router.push({path:'/home'});
 
+        }else{
+          that.$message(res.data.message);
         }
       });
 
 
 
-
+//fer0orp322ik0bemjuvgfsbud4
 
 
       // this.$refs.ruleForm2.validate((valid) => {

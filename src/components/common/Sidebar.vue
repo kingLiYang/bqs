@@ -27,56 +27,46 @@ export default {
       // items: [
       //   {
       //     icon: "el-icon-setting",
-      //     index: "readme",
-      //     title: "首页"
+      //     action: "readme",
+      //     name: "首页",
+      //     son:[{
+      //       action:"baseCharts",
+      //       name:"李洋"
+      //     }]
       //   },
       //   {
       //     icon: "el-icon-menu",
-      //     index: "2",
-      //     title: "系统设置",
-      //     subs: [
+      //     action: "2",
+      //     name: "系统设置",
+      //     son: [
       //       {
-      //         index: "basetable",
-      //         title: "用户管理"
+      //         action: "basetable",
+      //         name: "用户管理"
       //       },
       //       {
-      //         index: "vuetable",
-      //         title: "角色管理"
+      //         action: "vuetable",
+      //         name: "角色管理"
       //       },
       //       {
-      //         index: "power",
-      //         title: "权限管理"
+      //         action: "power",
+      //         name: "权限管理"
       //       },
       //       {
-      //         index: "compony",
-      //         title: "公司管理"
+      //         action: "compony",
+      //         name: "公司管理"
       //       }
       //     ]
       //   },
       //   {
-      //     icon: "el-icon-date",
-      //     index: "3",
-      //     title: "转运中心",
-      //     subs: [
+      //     icon: "el-icon-menu",
+      //     action: "3",
+      //     name: "冰骑士",
+      //     son: [
       //       {
-      //         index: "baseform",
-      //         title: "站点任务管理"
-      //       },
-      //       {
-      //         index: "vueeditor",
-      //         title: "指派任务"
+      //         action: "oldCharts",
+      //         name: "冰骑士管理"
       //       }
       //     ]
-      //   },
-      //   {
-      //     icon: "el-icon-star-on",
-      //     index: "basecharts",
-      //     title: "图表"
-      //   },
-      //   {
-      //     icon: "el-icon-upload2",
-      //     index: "drag",
-      //     title: "拖拽"
       //   }
       // ]
     };
@@ -87,7 +77,7 @@ export default {
     }
   },
   created(){
-    this.items = this.$route.query.menu;
+    this.items = JSON.parse(window.sessionStorage.getItem("items"));
   }
 };
 </script>

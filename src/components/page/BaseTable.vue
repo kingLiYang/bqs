@@ -16,6 +16,7 @@
             </el-form-item>
             <el-form-item label="启用状态">
                 <el-select  v-model="formInline"  placeholder="请选择启用状态">
+                  <el-option label="请选择" value=""></el-option>
                 <el-option label="审核通过" value="1"></el-option>
                 <el-option label="禁用" value="0"></el-option>
                 </el-select>
@@ -61,10 +62,15 @@
                 label="添加时间">
                 <template slot-scope="scope">{{ scope.row.addtime | formatDate}}</template>
               </el-table-column>
+
               <el-table-column
                 prop="status"
-                label="启用状态">
+                label="启用状态" :formatter="judge">
+                <!-- <div v-if="status==1"></div>  -->
               </el-table-column>
+
+
+
               <el-table-column
                 label="操作">
                 <template slot-scope="scope">
@@ -225,11 +231,13 @@ export default {
       },
       dialogFormVisible: false,
       formLabelWidth: "120px",
-      ccc: 1,
+      ccc: 0,
       allRole: [], // 所有角色,
       checkedCities1: [], // 默认选中的,
       userVal: [],
-      id: ""
+      id: "",
+      currentPage: 1
+      
     };
   },
   created() {
@@ -240,15 +248,14 @@ export default {
     add() {
       //   this.$router.push({ path: '/userAdd' });
       // 添加   弹框
-      this.dialogFormVisible = true;
       this.getCity(); // 获取公司
     },
     getCity() {
       let that = this;
       this.$axios({
-        url: "api/bqs/backend/web/index.php/company/company",
+        url: "http://www.zjcoldcloud.com/bqs/backend/web/index.php/company/company",
         method: "post",
-        data: { level: 3 },
+        data: { level: 3,token: window.sessionStorage.getItem("token") },
         transformRequest: [
           function(data) {
             let ret = "";
@@ -264,16 +271,23 @@ export default {
         ],
         headers: { "Content-Type": "application/x-www-form-urlencoded" }
       }).then(function(res) {
-        that.options = res.data.data;
+        if(res.data.code == '0'){
+      that.dialogFormVisible = true;
+          
+          that.options = res.data.data;
+        }else if(res.data.code == '450'){
+          that.$message("暂无权限");
+        }
+        
       });
     },
     getZhan() {
       // 获取站点  根据所点公司
       let that = this;
       this.$axios({
-        url: "api/bqs/backend/web/index.php/company/next",
+        url: "http://www.zjcoldcloud.com/bqs/backend/web/index.php/company/next",
         method: "post",
-        data: { pid: this.form.region },
+        data: { pid: this.form.region ,token: window.sessionStorage.getItem("token")},
         transformRequest: [
           function(data) {
             let ret = "";
@@ -302,7 +316,7 @@ export default {
       }
       let that = this;
       this.$axios({
-        url: "api/bqs/backend/web/index.php/user/add",
+        url: "http://www.zjcoldcloud.com/bqs/backend/web/index.php/user/add",
         method: "post",
         data: {
           username: this.form.username,
@@ -310,7 +324,8 @@ export default {
           relly_name: this.form.name,
           email: this.form.email,
           phone: this.form.phone,
-          company_id: id
+          company_id: id,
+          token: window.sessionStorage.getItem("token")
         },
         transformRequest: [
           function(data) {
@@ -327,10 +342,15 @@ export default {
         ],
         headers: { "Content-Type": "application/x-www-form-urlencoded" }
       }).then(function(res) {
-        // that.options1 = res.data.data;
-        that.dialogFormVisible = false;
-        that.$message("添加成功");
-        that.getData();
+        if(res.data.code == '0'){
+            // that.options1 = res.data.data;
+          that.dialogFormVisible = false;
+          that.$message("添加成功");
+          that.getData();
+        }else if(res.data.code == '450'){
+          that.$message("暂无权限");
+        }
+        
       });
     },
     edit() {
@@ -349,7 +369,7 @@ export default {
         this.getCity();
         let that = this;
         this.$axios({
-          url: `api/bqs/backend/web/index.php/user/update?id=${this.arr.join(",")}`,
+          url: `http://www.zjcoldcloud.com/bqs/backend/web/index.php/user/update?id=${this.arr.join(",")}&token=${window.sessionStorage.getItem("token")}`,
           method: "get",
           data: {},
           transformRequest: [
@@ -376,7 +396,9 @@ export default {
             that.form1.email = res.data.data.email;
 
             that.editFormVisible = true;
-          }
+          }else if(res.data.code == '450'){
+          that.$message("暂无权限");
+        }
         });
       }
     },
@@ -390,7 +412,7 @@ export default {
       }
       let that = this;
       this.$axios({
-        url: `api/bqs/backend/web/index.php/user/update`,
+        url: `http://www.zjcoldcloud.com/bqs/backend/web/index.php/user/update`,
         method: "post",
         data: {
           id: this.arr.join(","),
@@ -399,7 +421,8 @@ export default {
           relly_name: this.form1.name,
           email: this.form1.email,
           phone: this.form1.phone,
-          company_id: editId
+          company_id: editId,
+          token: window.sessionStorage.getItem("token")
         },
         transformRequest: [
           function(data) {
@@ -420,6 +443,8 @@ export default {
           that.editFormVisible = false;
           that.$message("修改成功");
           that.getData();
+        }else if(res.data.code == '450'){
+          that.$message("暂无权限");
         }
       });
     },
@@ -438,10 +463,11 @@ export default {
       // 删除  提交
       let that = this;
       this.$axios({
-        url: "api/bqs/backend/web/index.php/user/delete",
+        url: "http://www.zjcoldcloud.com/bqs/backend/web/index.php/user/delete",
         method: "post",
         data: {
-          id: this.arr.join(",")
+          id: this.arr.join(","),
+          token: window.sessionStorage.getItem("token")
         },
         transformRequest: [
           function(data) {
@@ -465,6 +491,8 @@ export default {
           that.checkedAll = false;
           that.isChecked = false;
           that.getData();
+        }else if(res.data.code == '450'){
+          that.$message("暂无权限");
         }
       });
     },
@@ -476,14 +504,16 @@ export default {
       this.getData();
     },
     getData() {
+      // 查询
       let that = this;
       this.$axios({
-        url: "api/bqs/backend/web/index.php/user/list",
+        url: "http://www.zjcoldcloud.com/bqs/backend/web/index.php/user/list",
         method: "post",
         data: {
           page: this.currentPage,
           relly_name: this.userNam,
-          status: this.formInline
+          status: this.formInline,
+          token: window.sessionStorage.getItem("token")
         },
         transformRequest: [
           function(data) {
@@ -500,8 +530,13 @@ export default {
         ],
         headers: { "Content-Type": "application/x-www-form-urlencoded" }
       }).then(function(res) {
-        that.tableData = res.data.data.data;
-        that.ccc = Number(res.data.data.count);
+        if(res.data.code == '0'){
+          that.tableData = res.data.data.data;
+          that.ccc = Number(res.data.data.count) || 0;
+        }else if(res.data.code == '450'){
+          that.$message("暂无权限");
+        }
+        
       });
     },
     is_yes() {
@@ -514,11 +549,12 @@ export default {
       } else {
         let that = this;
         this.$axios({
-          url: "api/bqs/backend/web/index.php/user/is_not",
+          url: "http://www.zjcoldcloud.com/bqs/backend/web/index.php/user/is_not",
           method: "post",
           data: {
             status: 1,
-            id: this.arr.join(",")
+            id: this.arr.join(","),
+            token: window.sessionStorage.getItem("token")
           },
           transformRequest: [
             function(data) {
@@ -540,7 +576,9 @@ export default {
               message: "启用通过"
             });
             that.getData();
-          }
+          }else if(res.data.code == '450'){
+          that.$message("暂无权限");
+        }
         });
       }
     },
@@ -554,11 +592,12 @@ export default {
       } else {
         let that = this;
         this.$axios({
-          url: "api/bqs/backend/web/index.php/user/is_not",
+          url: "http://www.zjcoldcloud.com/bqs/backend/web/index.php/user/is_not",
           method: "post",
           data: {
             status: 0,
-            id: this.arr.join(",")
+            id: this.arr.join(","),
+            token: window.sessionStorage.getItem("token")
           },
           transformRequest: [
             function(data) {
@@ -580,7 +619,9 @@ export default {
               message: "禁用成功"
             });
             that.getData();
-          }
+          }else if(res.data.code == '450'){
+          that.$message("暂无权限");
+        }
         });
       }
     },
@@ -589,10 +630,11 @@ export default {
       this.id = rows.u_id;
       let that = this;
       this.$axios({
-        url: "api/bqs/backend/web/index.php/user/role_list",
+        url: "http://www.zjcoldcloud.com/bqs/backend/web/index.php/user/role_list",
         method: "post",
         data: {
-          id: this.id
+          id: this.id,
+          token: window.sessionStorage.getItem("token")
         },
         transformRequest: [
           function(data) {
@@ -612,7 +654,10 @@ export default {
         if (res.data.code == 0) {
           that.allRole = res.data.data.role;
           that.checkedCities1 = res.data.data.user_role;
+          that.userVal = res.data.data.user_role;
           that.allotDialogVisible = true;
+        }else if(res.data.code == '450'){
+          that.$message("暂无权限");
         }
       });
     },
@@ -624,11 +669,12 @@ export default {
       // 分配角色  提交
       let that = this;
       this.$axios({
-        url: "api/bqs/backend/web/index.php/user/role",
+        url: "http://www.zjcoldcloud.com/bqs/backend/web/index.php/user/role",
         method: "post",
         data: {
-          role: this.userVal,
-          id: this.id
+          role: this.userVal.join(','),
+          id: this.id,
+          token: window.sessionStorage.getItem("token")
         },
         transformRequest: [
           function(data) {
@@ -648,6 +694,8 @@ export default {
         if (res.data.code == 0) {
           // that.allRole = res.data.data.role;
           that.allotDialogVisible = false;
+        }else if(res.data.code == '450'){
+          that.$message("暂无权限");
         }
       });
     },
@@ -662,6 +710,9 @@ export default {
       val.forEach((item,index)=>{
         this.arr.push(item.u_id);
       })
+    },
+    judge(data){
+        return data.status==1 ? '启用' : '禁用'
     }
   },
   filters: {

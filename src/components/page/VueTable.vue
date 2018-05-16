@@ -159,26 +159,47 @@ export default {
     show() {
       let that = this;
       this.$axios({
-        url: `api/bqs/backend/web/index.php/role/list`,
-        method: "get",
+        url: `http://www.zjcoldcloud.com/bqs/backend/web/index.php/role/list`,
+        method: "post",
+        data:{token: window.sessionStorage.getItem("token")},
+        transformRequest: [
+          function(data) {
+            let ret = "";
+            for (let it in data) {
+              ret +=
+                encodeURIComponent(it) +
+                "=" +
+                encodeURIComponent(data[it]) +
+                "&";
+            }
+            return ret;
+          }
+        ],
         headers: { "Content-Type": "application/x-www-form-urlencoded" }
       }).then(function(res) {
-        that.options = res.data.data.data;
-        that.count = res.data.data.count;
+        if(res.data.code == '0'){
+          that.options = res.data.data.data;
+          that.count = res.data.data.count;
+        }else if(res.data.code == '450'){
+          that.$message("暂无权限");
+        }
+        
       });
     },
     add() {
       // 添加 弹框
+      this.form.name = '';
       this.dialogFormVisible = true;
     },
     addOrder() {
       // 添加  提交
       let that = this;
       this.$axios({
-        url: "api/bqs/backend/web/index.php/role/add",
+        url: "http://www.zjcoldcloud.com/bqs/backend/web/index.php/role/add",
         method: "post",
         data: {
-          name: this.form.name
+          name: this.form.name,
+          token: window.sessionStorage.getItem("token")
         },
         transformRequest: [
           function(data) {
@@ -198,6 +219,10 @@ export default {
         if (res.data.code == 0) {
           that.dialogFormVisible = false;
           that.show();
+        }else if(res.data.code == '450'){
+          that.$message("暂无权限");
+        }else{
+          that.$message("请输入内容");
         }
       });
     },
@@ -218,10 +243,11 @@ export default {
       // 删除  提交
       let that = this;
       this.$axios({
-        url: "api/bqs/backend/web/index.php/role/delete",
+        url: "http://www.zjcoldcloud.com/bqs/backend/web/index.php/role/delete",
         method: "post",
         data: {
-          id: this.arr.join(",")
+          id: this.arr.join(","),
+          token: window.sessionStorage.getItem("token")
         },
         transformRequest: [
           function(data) {
@@ -245,6 +271,8 @@ export default {
         }else if(res.data.code == 10){
           that.dialogVisible = false;
           that.$message("该角色已有用户使用");
+        }else if(res.data.code == '450'){
+          that.$message("暂无权限");
         }
       });
     },
@@ -262,9 +290,8 @@ export default {
         });
       } else {
         let that = this;
-        alert(this.arr.join(','));
         this.$axios({
-          url: `api/bqs/backend/web/index.php/role/update?id=${this.arr.join(',')}`,
+          url: `http://www.zjcoldcloud.com/bqs/backend/web/index.php/role/update?id=${this.arr.join(',')}&token=${window.sessionStorage.getItem("token")}`,
           method: "get",
           data: {},
           transformRequest: [
@@ -285,7 +312,9 @@ export default {
           if (res.data.code == 0) {
             that.form1.name = res.data.data.name;
             that.editFormVisible = true;
-          }
+          }else if(res.data.code == '450'){
+          that.$message("暂无权限");
+        }
         });
       }
     },
@@ -293,11 +322,12 @@ export default {
       // 修改   提交
       let that = this;
         this.$axios({
-          url: `api/bqs/backend/web/index.php/role/update`,
+          url: `http://www.zjcoldcloud.com/bqs/backend/web/index.php/role/update`,
           method: "post",
           data: {
             id:this.arr.join(","),
-            name:this.form1.name
+            name:this.form1.name,
+            token: window.sessionStorage.getItem("token")
           },
           transformRequest: [
             function(data) {
@@ -318,7 +348,9 @@ export default {
             that.editFormVisible = false;
             that.$message('修改成功');
             that.show();
-          }
+          }else if(res.data.code == '450'){
+          that.$message("暂无权限");
+        }
         });
     },
      handleSelectionChange(val) {
@@ -333,10 +365,11 @@ export default {
       this.id = rows.r_id;
       let that = this;
       this.$axios({
-        url: "api/bqs/backend/web/index.php/role/get_role_oauth",
+        url: "http://www.zjcoldcloud.com/bqs/backend/web/index.php/role/get_role_oauth",
         method: "post",
         data: {
-          id: this.id
+          id: this.id,
+          token: window.sessionStorage.getItem("token")
         },
         transformRequest: [
           function(data) {
@@ -353,9 +386,14 @@ export default {
         ],
         headers: { "Content-Type": "application/x-www-form-urlencoded" }
       }).then(function(res) {
-        that.data2 = res.data.data.oauth;
-        that.data3 = res.data.data.my_oauth;
-        that.allotVisible = true;
+        if(res.data.code == '0'){
+          that.data2 = res.data.data.oauth;
+          that.data3 = res.data.data.my_oauth;
+          that.allotVisible = true;
+        }else if(res.data.code == '450'){
+          that.$message("暂无权限");
+        }
+        
       });
     },
     allotOrder() {
@@ -364,11 +402,12 @@ export default {
         // let id = e.currentTarget.getAttribute("data_id");
       let that = this;
       this.$axios({
-        url: "api/bqs/backend/web/index.php/role/allocation_oauth",
+        url: "http://www.zjcoldcloud.com/bqs/backend/web/index.php/role/allocation_oauth",
         method: "post",
         data: {
           role_id: this.id,
-          oauth_id: this.$refs.tree.getCheckedKeys()
+          oauth_id: this.$refs.tree.getCheckedKeys(),
+          token: window.sessionStorage.getItem("token")
         },
         transformRequest: [
           function(data) {
@@ -385,7 +424,13 @@ export default {
         ],
         headers: { "Content-Type": "application/x-www-form-urlencoded" }
       }).then(function(res) {
-        that.allotVisible = false;
+        if(res.data.code == '0'){
+           that.allotVisible = false;
+           that.$message("分配成功");
+        }else if(res.data.code == '450'){
+              that.$message("暂无权限");
+            }
+       
       });
     }
   },

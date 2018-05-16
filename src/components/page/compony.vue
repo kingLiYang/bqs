@@ -9,7 +9,7 @@
                 总条数：<span>{{count}}</span>条
             </div> -->
         </div>
-                 <div class="divBut" style="margin:20px 0 0 0;">
+                 <!-- <div class="divBut" style="margin:20px 0 0 0;">
           <el-form :inline="true" class="demo-form-inline">
              <el-form-item label="公司名称">
                  <el-input placeholder="请输入公司名称" v-model="userNam"></el-input>
@@ -26,7 +26,7 @@
                  <el-button type="primary" @click="searchUser()">查询</el-button>
              </el-form-item>
              </el-form>
-         </div>
+         </div> -->
         <!-- 表格 -->
          <table style="width:100%;border:1px solid #ccc;margin:10px 0 0 0;">
           <thead>
@@ -41,8 +41,8 @@
                         <td>{{Number(index)+1}}</td>
                         <td>{{item.level}}{{item.name}}</td>
                         <td>
-                            <el-button type="primary" size="small" round @click.native.prevent="allotCity()">分配城市</el-button>
-                            <el-button type="primary" size="small" round @click.native.prevent="seeCity()">查看城市</el-button>
+                            <el-button type="primary" size="small" round :data_id="item.c_id" @click.native.prevent="allotCity($event)">分配城市</el-button>
+                            <el-button type="primary" size="small" round :data_id="item.c_id" @click.native.prevent="seeCity($event)">查看城市</el-button>
                         </td>
                             <template v-if="item.level!='---------'">
                                 <td>
@@ -128,13 +128,13 @@
               <!-- 省 -->
               <ul>
                 <li v-for='(item,index) in getSheng' :key="index" >
-                  <input type="checkbox" :data_id="item.id">
+                  <input type="checkbox" :data_id="item.id" @change="shengStatus($event)" :checked="checkCity">
                   <span @click="flag && huoquCity($event)" :data_id="item.id">{{item.name}}</span>
                   </li>
               </ul>
               <!-- 市 -->
               <ul style="margin:0 200px 0 0;">
-                <li v-for="(item,index) in getAllCity" :key="index">
+                <li v-for="(item,index) in getAllCity" :key="index" >
                     <input type="checkbox" :data_id="item.id" @change="changeStatus($event)">
                     <span :data_id="item.id">{{item.name}}</span>
                 </li>
@@ -143,7 +143,23 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
             <el-button @click="allotVisible = false">取 消</el-button>
-            <el-button type="primary" @click="allotOrder()">确 定</el-button>
+            <el-button type="primary" @click="allotAddOrder()">添加</el-button>
+            <el-button type="primary" @click="allotEditOrder()">修改</el-button>
+        </div>
+        </el-dialog>
+        <!-- 查看城市  弹框 -->
+        <el-dialog title="分配城市" :visible.sync="seeVisible">
+        <el-form :model="form">
+            <div>
+              <ul style="display:flex;width:100%;flex-wrap:wrap;">
+                <li v-for="(item,index) in citys" :key="index" style="width:150px;">
+                    <span>{{item.name}}</span>
+                </li>
+              </ul>
+            </div>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="seeVisible = false">确定</el-button>
         </div>
         </el-dialog>
     </div>
@@ -161,12 +177,16 @@ export default {
       getSheng: [],
       getAllCity: [],
       arr:[],
+      arr1:[],
+      citys:[],
       p_id: "",
       count: "",
       dialogFormVisible: false,
       dialogVisible: false,
       dialogFormVisibleEdit: false,
       allotVisible:false,
+      seeVisible:false,
+      checkCity:false,
       form: {
         name: "",
         region: "",
@@ -176,7 +196,8 @@ export default {
         act: "",
         icon: ""
       },
-      formLabelWidth: "120px"
+      formLabelWidth: "120px",
+      isAllot:""
     };
   },
   created() {
@@ -187,9 +208,9 @@ export default {
       // 组件刚渲染  获取数据
       let that = this;
       this.$axios({
-        url: "api/bqs/backend/web/index.php/company/list",
-        method: "get",
-        data: {},
+        url: "http://www.zjcoldcloud.com/bqs/backend/web/index.php/company/list",
+        method: "post",
+        data: {token:window.sessionStorage.getItem("token")},
         transformRequest: [
           function(data) {
             let ret = "";
@@ -205,17 +226,22 @@ export default {
         ],
         headers: { "Content-Type": "application/x-www-form-urlencoded" }
       }).then(function(res) {
-        that.options = res.data.data;
+        if(res.data.code == '0'){
+            that.options = res.data.data;
         that.count = res.data.data.length;
+        }else if(res.data.code == '450'){
+              that.$message("暂无权限");
+            }
+        
       });
     },
     huoquSheng(){
       // 获取省
       let that = this;
       this.$axios({
-        url: "api/bqs/backend/web/index.php/company/city",
+        url: "http://www.zjcoldcloud.com/bqs/backend/web/index.php/company/city",
         method: "post",
-        data: {},
+        data: {token: window.sessionStorage.getItem("token")},
         transformRequest: [
           function(data) {
             let ret = "";
@@ -233,23 +259,30 @@ export default {
       }).then(function(res) {
         if (res.data.code == "0") {
           that.getSheng = res.data.data;
+          if(that.isAllot == '分配'){
+            that.allotVisible = true;
+          }else{
+            that.dialogFormVisible = true;
+          }
+        }else if(res.data.code == '450'){
+          that.$message("暂无权限");
         }
       });
     },
     addChild(e) {
       // 添加   弹框
-      //this.p_id = e.currentTarget.getAttribute("data_id");
-
-      this.dialogFormVisible = true;
+      this.p_id = e.currentTarget.getAttribute("data_id");
+      this.isAllot = '添加';
+      // 
       this.huoquSheng();
       
     },
     getCity() {
       let that = this;
       this.$axios({
-        url: "api/bqs/backend/web/index.php/company/city",
+        url: "http://www.zjcoldcloud.com/bqs/backend/web/index.php/company/city",
         method: "post",
-        data: { pid: this.form.region },
+        data: { pid: this.form.region ,token: window.sessionStorage.getItem("token")},
         transformRequest: [
           function(data) {
             let ret = "";
@@ -273,13 +306,14 @@ export default {
       if (this.form.region1 != "") {
         let that = this;
         this.$axios({
-          url: "api/bqs/backend/web/index.php/company/add",
+          url: "http://www.zjcoldcloud.com/bqs/backend/web/index.php/company/add",
           method: "post",
           data: {
             name: this.form.name,
             address: this.form.con,
             pid_path: this.p_id,
-            city: this.form.region1
+            city: this.form.region1,
+            token: window.sessionStorage.getItem("token")
           },
           transformRequest: [
             function(data) {
@@ -299,8 +333,12 @@ export default {
           if (res.data.code == "0") {
             that.dialogFormVisible = false;
             that.show();
-          }
+          }else if(res.data.code == '450'){
+              that.$message("暂无权限");
+            }
         });
+      }else{
+        this.$message("暂无权限")
       }
     },
     editChild(e) {
@@ -308,7 +346,7 @@ export default {
       this.p_id = e.currentTarget.getAttribute("data_id");
       let that = this;
       this.$axios({
-        url: `api/bqs/backend/web/index.php/company/update?id=${this.p_id}`,
+        url: `http://www.zjcoldcloud.com/bqs/backend/web/index.php/company/update?id=${this.p_id}&token=${window.sessionStorage.getItem("token")}`,
         method: "get",
         data: {},
         transformRequest: [
@@ -330,18 +368,21 @@ export default {
           that.form.name = res.data.data.name;
           that.form.con = res.data.data.address;
           that.dialogFormVisibleEdit = true;
-        }
+        }else if(res.data.code == '450'){
+              that.$message("暂无权限");
+            }
       });
     },
     editOrder() {
       let that = this;
       this.$axios({
-        url: `api/bqs/backend/web/index.php/company/update`,
+        url: `http://www.zjcoldcloud.com/bqs/backend/web/index.php/company/update`,
         method: "post",
         data: {
           address: this.form.con,
           name: this.form.name,
-          id: this.p_id
+          id: this.p_id,
+          token: window.sessionStorage.getItem("token")
         },
         transformRequest: [
           function(data) {
@@ -361,7 +402,9 @@ export default {
         if (res.data.code == "0") {
           that.dialogFormVisibleEdit = false;
           that.show();
-        }
+        }else if(res.data.code == '450'){
+              that.$message("暂无权限");
+            }
       });
     },
     delChild(e) {
@@ -373,10 +416,11 @@ export default {
       // 删除  提交
       let that = this;
       this.$axios({
-        url: "api/bqs/backend/web/index.php/company/delete",
+        url: "http://www.zjcoldcloud.com/bqs/backend/web/index.php/company/delete",
         method: "post",
         data: {
-          pid_path: this.p_id
+          pid_path: this.p_id,
+          token: window.sessionStorage.getItem("token")
         },
         transformRequest: [
           function(data) {
@@ -399,13 +443,18 @@ export default {
         } else if (res.data.code == "10") {
           that.dialogVisible = false;
           that.$message("该公司已有用户使用");
-        }
+        }else if(res.data.code == '450'){
+              that.$message("暂无权限");
+            }
       });
     },
-    allotCity(){
+    allotCity(e){
       // 点击 分配城市
+      this.p_id = e.currentTarget.getAttribute("data_id");
       this.huoquSheng();
-      this.allotVisible = true;
+      this.checkCity = false;
+      this.isAllot = '分配';
+      this.getAllCity = [];
     },
     huoquCity(e){
       // 点击 省 获取 城市
@@ -415,9 +464,9 @@ export default {
        }else{
          let that = this;
           this.$axios({
-            url: "api/bqs/backend/web/index.php/company/city",
+            url: "http://www.zjcoldcloud.com/bqs/backend/web/index.php/company/city",
             method: "post",
-            data: { pid: e.currentTarget.getAttribute("data_id") },
+            data: { pid: e.currentTarget.getAttribute("data_id"),token: window.sessionStorage.getItem("token") },
             transformRequest: [
               function(data) {
                 let ret = "";
@@ -438,8 +487,21 @@ export default {
        }
       
     },
+    shengStatus(e){
+      // 点击 省 多选框
+      if(e.currentTarget.checked == true){
+        this.arr1.push(e.currentTarget.getAttribute("data_id"));
+      }else{
+        for(let i=0;i<this.arr1.length;i++){
+          if(e.currentTarget.getAttribute("data_id")==this.arr1[i]){
+            this.arr1.splice(i,1);
+          }
+        }
+
+      }
+    },
     changeStatus(e){
-      // 点击 市
+      // 点击 市 多选框
       
       if(e.currentTarget.checked == true){
         this.arr.push(e.currentTarget.getAttribute("data_id"));
@@ -458,7 +520,104 @@ export default {
         this.flag = false;
       }
       console.log(this.arr);
+    },
+    allotEditOrder(){
+      // 修改
+      let that = this;
+          this.$axios({
+            url: "http://www.zjcoldcloud.com/bqs/backend/web/index.php/company/allot_city",
+            method: "post",
+            data: { id:  this.p_id,sheng:this.arr1.join(','),city: this.arr.join(','),token: window.sessionStorage.getItem("token"),sta:2},
+            transformRequest: [
+              function(data) {
+                let ret = "";
+                for (let it in data) {
+                  ret +=
+                    encodeURIComponent(it) +
+                    "=" +
+                    encodeURIComponent(data[it]) +
+                    "&";
+                }
+                return ret;
+              }
+            ],
+            headers: { "Content-Type": "application/x-www-form-urlencoded" }
+          }).then(function(res) {
+            if(res.data.code == "0"){
+              that.allotVisible = false;
+              that.$message("修改成功");
+            }else if(res.data.code == '450'){
+              that.$message("暂无权限");
+            }else{
+              that.$message('请选择城市');
+            }
+          });
+    },
+    allotAddOrder(){
+      // 添加
+      let that = this;
+          this.$axios({
+            url: "http://www.zjcoldcloud.com/bqs/backend/web/index.php/company/allot_city",
+            method: "post",
+            data: { id:  this.p_id,sheng:this.arr1.join(','),city: this.arr.join(','),token: window.sessionStorage.getItem("token"),sta:1},
+            transformRequest: [
+              function(data) {
+                let ret = "";
+                for (let it in data) {
+                  ret +=
+                    encodeURIComponent(it) +
+                    "=" +
+                    encodeURIComponent(data[it]) +
+                    "&";
+                }
+                return ret;
+              }
+            ],
+            headers: { "Content-Type": "application/x-www-form-urlencoded" }
+          }).then(function(res) {
+            if(res.data.code == "0"){
+              that.allotVisible = false;
+              that.$message("添加成功");
+            }else if(res.data.code == '450'){
+              that.$message("暂无权限");
+            }else{
+              that.$message('请选择城市');
+            }
+          });
+    },
+    seeCity(e){
+      // 查看城市
+      let that = this;
+          this.$axios({
+            url: "http://www.zjcoldcloud.com/bqs/backend/web/index.php/company/list_city",
+            method: "post",
+            data: { id:  e.currentTarget.getAttribute("data_id"),token: window.sessionStorage.getItem("token")},
+            transformRequest: [
+              function(data) {
+                let ret = "";
+                for (let it in data) {
+                  ret +=
+                    encodeURIComponent(it) +
+                    "=" +
+                    encodeURIComponent(data[it]) +
+                    "&";
+                }
+                return ret;
+              }
+            ],
+            headers: { "Content-Type": "application/x-www-form-urlencoded" }
+          }).then(function(res) {
+            if(res.data.code == "0"){
+              that.citys = res.data.data;
+              that.seeVisible = true;
+            }else if(res.data.code == '450'){
+              that.$message("暂无权限");
+            }else{
+              that.$message("暂无管辖城市");
+            }
+          });
     }
+
 
 
   
@@ -493,6 +652,7 @@ ul{
 }
 ul li{
   list-style: none;
+  height:50px;
   line-height: 50px;
   
 }

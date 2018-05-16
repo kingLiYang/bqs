@@ -30,8 +30,37 @@
         methods:{
             handleCommand(command) {
                 if(command == 'loginout'){
-                    sessionStorage.removeItem('username')
-                    this.$router.push('/login');
+                    // 退出
+                    let that = this;
+                    this.$axios({
+                        url: this.URL_API+"/bqs/backend/web/index.php/login/out",
+                        method: "post",
+                        data: {
+                            token: window.sessionStorage.getItem("token")
+                            
+                        },
+                        transformRequest: [
+                        function(data) {
+                            let ret = "";
+                            for (let it in data) {
+                            ret +=
+                                encodeURIComponent(it) +
+                                "=" +
+                                encodeURIComponent(data[it]) +
+                                "&";
+                            }
+                            return ret;
+                        }
+                        ],
+                        headers: { "Content-Type": "application/x-www-form-urlencoded" }
+                    }).then(function(res) {
+                        if (res.data.code == "0") {
+                            sessionStorage.removeItem('username')
+                            that.$router.push('/login');
+
+                        }
+                    });
+                    
                 }
             }
         }

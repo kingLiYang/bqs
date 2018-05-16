@@ -9,6 +9,15 @@ import "babel-polyfill";
 
 Vue.use(ElementUI);
 Vue.prototype.$axios = axios;
+
+//判断 开发环境 生产环境
+if (process.env.NODE_ENV !== 'development') {
+    Vue.prototype.URL_API = 'http://www.zjcoldcloud.com';
+  } else {
+    Vue.prototype.URL_API = 'api/'
+}
+
+
 new Vue({
     router,
     render: h => h(App)

@@ -141,12 +141,13 @@ export default {
   },
   methods: {
     show() {
+      
       // 组件刚渲染  获取数据
       let that = this;
       this.$axios({
-        url: "api/bqs/backend/web/index.php/oauth/list",
-        method: "get",
-        data: {},
+        url: "http://www.zjcoldcloud.com/bqs/backend/web/index.php/oauth/list",
+        method: "post",
+        data: {token: window.sessionStorage.getItem("token")},
         transformRequest: [
           function(data) {
             let ret = "";
@@ -162,8 +163,13 @@ export default {
         ],
         headers: { "Content-Type": "application/x-www-form-urlencoded" }
       }).then(function(res) {
-        that.options = res.data.data.data;
-        that.count = res.data.data.count;
+        if(res.data.code == '0'){
+          that.options = res.data.data.data;
+          that.count = res.data.data.count;
+        }else if(res.data.code == '450'){
+              that.$message("暂无权限");
+            }
+        
       });
     },
     add() {
@@ -180,7 +186,7 @@ export default {
       // 添加子权限    提交
       let that = this;
       this.$axios({
-        url: "api/bqs/backend/web/index.php/oauth/add",
+        url: "http://www.zjcoldcloud.com/bqs/backend/web/index.php/oauth/add",
         method: "post",
         data: {
           action: this.form.act,
@@ -188,7 +194,8 @@ export default {
           name: this.form.name,
           p_path: this.p_id,
           type: this.form.region,
-          icon: this.form.icon
+          icon: this.form.icon,
+          token: window.sessionStorage.getItem("token")
         },
         transformRequest: [
           function(data) {
@@ -207,8 +214,15 @@ export default {
       }).then(function(res) {
         if (res.data.code == "0") {
           that.dialogFormVisible = false;
+          that.$message("添加成功");
           that.show();
-        }
+        }else if(res.data.code == '450'){
+          that.dialogFormVisible = false;
+              that.$message("暂无权限");
+              
+            }else{
+              that.$message(res.data.message);
+            }
       });
     },
     editChild(e) {
@@ -216,7 +230,7 @@ export default {
       this.p_id = e.currentTarget.getAttribute("data_id");
       let that = this;
       this.$axios({
-        url: `api/bqs/backend/web/index.php/oauth/update?id=${this.p_id}`,
+        url: `http://www.zjcoldcloud.com/bqs/backend/web/index.php/oauth/update?id=${this.p_id}&token=${window.sessionStorage.getItem("token")}`,
         method: "get",
         data: {},
         transformRequest: [
@@ -245,13 +259,15 @@ export default {
           that.form.act = res.data.data.action;
           that.dialogFormVisibleEdit = true;
           that.form.icon = res.data.data.icon;
-        }
+        }else if(res.data.code == '450'){
+              that.$message("暂无权限");
+            }
       });
     },
     editOrder() {
       let that = this;
       this.$axios({
-        url: `api/bqs/backend/web/index.php/oauth/update`,
+        url: `http://www.zjcoldcloud.com/bqs/backend/web/index.php/oauth/update`,
         method: "post",
         data: {
           action: this.form.act,
@@ -259,7 +275,8 @@ export default {
           name: this.form.name,
           type: this.form.region,
           id: this.p_id,
-          icon: this.form.icon
+          icon: this.form.icon,
+          token: window.sessionStorage.getItem("token")
         },
         transformRequest: [
           function(data) {
@@ -276,11 +293,13 @@ export default {
         ],
         headers: { "Content-Type": "application/x-www-form-urlencoded" }
       }).then(function(res) {
-          
         if (res.data.code == "0") {
             that.dialogFormVisibleEdit = false;
+            that.$message("修改成功");
             that.show();
-        }
+        }else if(res.data.code == '450'){
+              that.$message("暂无权限");
+            }
       });
     },
     delChild(e) {
@@ -292,10 +311,11 @@ export default {
       // 删除  提交
       let that = this;
       this.$axios({
-        url: "api/bqs/backend/web/index.php/oauth/delete",
+        url: "http://www.zjcoldcloud.com/bqs/backend/web/index.php/oauth/delete",
         method: "post",
         data: {
-          p_path: this.p_id
+          p_path: this.p_id,
+          token: window.sessionStorage.getItem("token")
         },
         transformRequest: [
           function(data) {
@@ -315,6 +335,9 @@ export default {
         if (res.data.code == "0") {
           that.dialogVisible = false;
           that.show();
+          that.$message("删除成功");
+        }else if(res.data.code == '450'){
+          that.$message("暂无权限");
         }
       });
     }
@@ -331,12 +354,16 @@ th {
 }
 tr td:nth-child(2) {
   text-align: left;
-  padding: 0 0 0 40px;
+  padding: 0 0 0 85px;
+  width:400px;
 }
 table {
   border: solid #ccc;
   border-width: 1px 0px 0px 1px;
   border-collapse: collapse;
+}
+table tr th：nth-child(2){
+  width:400px;
 }
 .divBut {
   display: flex;
