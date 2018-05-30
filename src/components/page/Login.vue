@@ -2,7 +2,7 @@
    <el-form :rules="rules2" label-position="left" label-width="0px" class="demo-ruleForm card-box loginform">
     <h3 class="title">冰骑士后台</h3>
     <el-form-item>
-      <el-input type="text" auto-complete="off" placeholder="账号1" v-model="account"></el-input>
+      <el-input type="text" auto-complete="off" placeholder="账号" v-model="account"></el-input>
     </el-form-item>
     <el-form-item>
       <el-input type="password" auto-complete="off" placeholder="密码" v-model="checkPass"  @keyup.enter.native="handleSubmit2"></el-input>
@@ -62,43 +62,6 @@ export default {
         }
       });
 
-
-
-//fer0orp322ik0bemjuvgfsbud4
-
-
-      // this.$refs.ruleForm2.validate((valid) => {
-      // console.log(valid);
-      //   if (valid) {
-      //_this.$router.replace('/table');
-      // this.logining = true;
-      // NProgress.start();
-      // var loginParams = { username: this.ruleForm2.account, password: this.ruleForm2.checkPass };
-
-      // requestLogin(loginParams).then(data => {
-      //   this.logining = false;
-      //   NProgress.done();
-      //   let { msg, code, user } = data;
-      //   if (code !== 200) {
-      //     this.$notify({
-      //       title: '错误',
-      //       message: msg,
-      //       type: 'error'
-      //     });
-      //   } else {
-      //     localStorage.setItem('user', JSON.stringify(user));
-      //     if (this.$route.query.redirect) {
-      //       this.$router.push({ path: this.$route.query.redirect });
-      //     } else {
-      //       this.$router.push({ path: '/table' });
-      //     }
-      //   }
-      // });
-      //   } else {
-      //     console.log('error submit!!');
-      //     return false;
-      //   }
-      // });
     }
   }
 };
@@ -107,7 +70,6 @@ export default {
 <style scoped>
 .card-box {
   padding: 20px;
-  /*box-shadow: 0 0px 8px 0 rgba(0, 0, 0, 0.06), 0 1px 0px 0 rgba(0, 0, 0, 0.02);*/
   -webkit-border-radius: 5px;
   border-radius: 5px;
   -moz-border-radius: 5px;
@@ -129,36 +91,4 @@ export default {
   width: 350px;
   padding: 35px 35px 15px 35px;
 }
-/* .login-wrap {
-  position: relative;
-  width: 100%;
-  height: 100%;
-}
-.ms-title {
-  position: absolute;
-  top: 50%;
-  width: 100%;
-  margin-top: -230px;
-  text-align: center;
-  font-size: 30px;
-  color: #fff;
-}
-.ms-login {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 300px;
-  height: 160px;
-  margin: -150px 0 0 -190px;
-  padding: 40px;
-  border-radius: 5px;
-  background: #fff;
-}
-.login-btn {
-  text-align: center;
-}
-.login-btn button {
-  width: 100%;
-  height: 36px;
-} */
 </style>

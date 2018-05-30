@@ -182,6 +182,9 @@ export default {
           that.count = res.data.data.count;
         }else if(res.data.code == '450'){
           that.$message("暂无权限");
+        }else if(res.data.code == '400'){
+          that.$message("请先登录");
+          that.$router.push('/');
         }
         
       });

@@ -44,7 +44,7 @@
                             <el-button type="primary" size="small" round :data_id="item.c_id" @click.native.prevent="allotCity($event)">分配城市</el-button>
                             <el-button type="primary" size="small" round :data_id="item.c_id" @click.native.prevent="seeCity($event)">查看城市</el-button>
                         </td>
-                            <template v-if="item.level!='---------'">
+                            <template v-if="item.level_num!='4'">
                                 <td>
                                     <el-button type="primary" size="small" round :data_id="item.pid_path" @click="addChild($event)" >添加子公司</el-button>
                                     <el-button type="warning" size="small" round :data_id="item.c_id" @click="editChild($event)">修改</el-button>
@@ -73,7 +73,7 @@
             <el-input v-model="form.name" auto-complete="off"></el-input>
             </el-form-item>
             <el-form-item label="地址" :label-width="formLabelWidth">
-            <el-input v-model="form.con" auto-complete="off"></el-input>
+            <el-input v-model="form.con" auto-complete="off" placeholder="格式为：湖南省邵阳市韶山县东湖大街2号// 省市必填"></el-input>
             </el-form-item>
             <el-form-item label="所在省份" :label-width="formLabelWidth">
              <el-select v-model="form.region" placeholder="请选择省份" @change="getCity()">
@@ -231,7 +231,10 @@ export default {
         that.count = res.data.data.length;
         }else if(res.data.code == '450'){
               that.$message("暂无权限");
-            }
+            }else if(res.data.code == '400'){
+          that.$message("请先登录");
+          that.$router.push('/');
+        }
         
       });
     },
@@ -273,11 +276,16 @@ export default {
       // 添加   弹框
       this.p_id = e.currentTarget.getAttribute("data_id");
       this.isAllot = '添加';
+      this.form.name = '';
+      this.form.con = '';
+      this.form.region = '';
+      this.form.region1 = '';
       // 
       this.huoquSheng();
       
     },
     getCity() {
+      this.form.region1 = '';
       let that = this;
       this.$axios({
         url: "http://www.zjcoldcloud.com/bqs/backend/web/index.php/company/city",

@@ -14,7 +14,7 @@ Vue.prototype.$axios = axios;
 if (process.env.NODE_ENV !== 'development') {
     Vue.prototype.URL_API = 'http://www.zjcoldcloud.com';
   } else {
-    Vue.prototype.URL_API = 'api/'
+    Vue.prototype.URL_API = 'api/';
 }
 
 

@@ -168,7 +168,10 @@ export default {
           that.count = res.data.data.count;
         }else if(res.data.code == '450'){
               that.$message("暂无权限");
-            }
+            }else if(res.data.code == '400'){
+          that.$message("请先登录");
+          that.$router.push('/');
+        }
         
       });
     },
@@ -180,6 +183,18 @@ export default {
     addChild(e) {
       // 添加子权限   弹框
       this.p_id = e.currentTarget.getAttribute("data_id");
+      // name: "",
+      //   region: "",
+      //   delivery: false,
+      //   con: "",
+      //   act: "",
+      //   icon: ""
+      this.form.name = '';
+      this.form.region = '';
+      this.form.con = '';
+      this.form.act = '';
+      this.form.icon = '';
+
       this.dialogFormVisible = true;
     },
     addOrder() {
@@ -265,6 +280,11 @@ export default {
       });
     },
     editOrder() {
+      if(this.form.region == '菜单权限' || this.form.region == '1'){
+        this.form.region = 1;
+      }else{
+         this.form.region = 0;
+      }
       let that = this;
       this.$axios({
         url: `http://www.zjcoldcloud.com/bqs/backend/web/index.php/oauth/update`,
@@ -294,8 +314,8 @@ export default {
         headers: { "Content-Type": "application/x-www-form-urlencoded" }
       }).then(function(res) {
         if (res.data.code == "0") {
+          that.$message("修改成功");
             that.dialogFormVisibleEdit = false;
-            that.$message("修改成功");
             that.show();
         }else if(res.data.code == '450'){
               that.$message("暂无权限");
@@ -334,8 +354,9 @@ export default {
       }).then(function(res) {
         if (res.data.code == "0") {
           that.dialogVisible = false;
-          that.show();
           that.$message("删除成功");
+          that.show();
+          
         }else if(res.data.code == '450'){
           that.$message("暂无权限");
         }
@@ -362,7 +383,7 @@ table {
   border-width: 1px 0px 0px 1px;
   border-collapse: collapse;
 }
-table tr th：nth-child(2){
+table tr th:nth-child(2){
   width:400px;
 }
 .divBut {

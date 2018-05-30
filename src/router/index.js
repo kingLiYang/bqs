@@ -42,20 +42,32 @@ export default new Router({
                     component: resolve => require(['../components/page/user/userEdit.vue'], resolve) 
                 },
                 {
-                    path: '/baseform',
-                    component: resolve => require(['../components/page/BaseForm.vue'], resolve)
+                    path: '/oldCharts',                                                              // 冰骑士管理
+                    component: resolve => require(['../components/page/OldCharts.vue'], resolve)
+                },
+                // {
+                //     path: '/text',                                                                 // 练习
+                //     component: resolve => require(['../components/page/text.vue'], resolve)
+                // },
+                {
+                    path:'/waybill',                                                           // 运单管理
+                    component: resolve => require(['../components/page/management/waybill.vue'], resolve)
                 },
                 {
-                    path:'/zyDetails',                                                           // 详情
-                    component: resolve => require(['../components/page/management/zyDetails.vue'], resolve)
+                    path:'/billType',                                                           // 运单管理   添加 
+                    component: resolve => require(['../components/page/management/billType.vue'], resolve)
                 },
                 {
-                    path: '/vueeditor',
-                    component: resolve => require(['../components/page/VueEditor.vue'], resolve)    // Vue-Quill-Editor组件
+                    path:'/billDetails',                                                           // 运单管理   添加 
+                    component: resolve => require(['../components/page/management/billDetails.vue'], resolve)
                 },
                 {
-                    path: '/markdown',
-                    component: resolve => require(['../components/page/Markdown.vue'], resolve)     // Vue-Quill-Editor组件
+                    path: '/commission',
+                    component: resolve => require(['../components/page/commission.vue'], resolve)    // 冰骑士佣金管理
+                },
+                {
+                    path: '/auding',
+                    component: resolve => require(['../components/page/auding.vue'], resolve)     // 提现审核管理
                 },
                 {
                     path: '/upload',

@@ -93,7 +93,7 @@
         <el-dialog title="添加用户" :visible.sync="dialogFormVisible">
         <el-form :model="form">
             <el-form-item label="用户姓名" :label-width="formLabelWidth">
-            <el-input v-model="form.name" auto-complete="off"></el-input>
+            <el-input v-model="form.name" auto-complete="off" @blur="testChina(val='添加')"></el-input>
             </el-form-item>
             <el-form-item label="登录账号" :label-width="formLabelWidth">
             <el-input v-model="form.username" auto-complete="off"></el-input>
@@ -103,18 +103,29 @@
             <el-input v-model="form.password" auto-complete="off"></el-input>
             </el-form-item>
             <el-form-item label="用户邮箱" :label-width="formLabelWidth">
-            <el-input v-model="form.email" auto-complete="off"></el-input>
+            <el-input v-model="form.email" auto-complete="off" @blur="testEmail(val='添加')"></el-input>
             </el-form-item>
             <el-form-item label="联系电话" :label-width="formLabelWidth">
-            <el-input v-model="form.phone" auto-complete="off"></el-input>
+            <el-input v-model="form.phone" auto-complete="off" @blur="testPhone(val='添加')"></el-input>
+            </el-form-item>
+            <el-form-item label="总部名称" :label-width="formLabelWidth">
+              <el-input v-model="form.admin" auto-complete="off" :disabled="true" placeholder="总部"></el-input>
+            </el-form-item>
+            <el-form-item label="大区名称" :label-width="formLabelWidth">
+              <el-select v-model="form.tera" placeholder="请选择大区"  @change="getCompany()">
+                <el-option label="请选择" value=""></el-option>
+                <el-option :label="item.name" :value="item.c_id" v-for="(item,index) in optionCompany"></el-option>
+              </el-select>
             </el-form-item>
             <el-form-item label="公司名称" :label-width="formLabelWidth">
             <el-select v-model="form.region" placeholder="请选择公司"  @change="getZhan()">
+              <el-option label="请选择" value=""></el-option>
                 <el-option :label="item.name" :value="item.c_id" v-for="(item,index) in options"></el-option>
               </el-select>
             </el-form-item>
              <el-form-item label="所在站点" :label-width="formLabelWidth">
             <el-select v-model="form.zhan" placeholder="请选择站点">
+              <el-option label="请选择" value=""></el-option>
                 <el-option  :label="item.name" :value="item.c_id" v-for="(item,index) in options1"></el-option>
               </el-select>
             </el-form-item>
@@ -128,7 +139,7 @@
         <el-dialog title="修改用户" :visible.sync="editFormVisible">
         <el-form :model="form1">
             <el-form-item label="用户姓名" :label-width="formLabelWidth">
-            <el-input v-model="form1.name" auto-complete="off"></el-input>
+            <el-input v-model="form1.name" auto-complete="off" @blur="testChina(val='修改')"></el-input>
             </el-form-item>
             <el-form-item label="登录账号" :label-width="formLabelWidth">
             <el-input v-model="form1.username" auto-complete="off"></el-input>
@@ -138,18 +149,29 @@
             <el-input v-model="form1.password" auto-complete="off"></el-input>
             </el-form-item>
             <el-form-item label="用户邮箱" :label-width="formLabelWidth">
-            <el-input v-model="form1.email" auto-complete="off"></el-input>
+            <el-input v-model="form1.email" auto-complete="off" @blur="testEmail(val='修改')"></el-input>
             </el-form-item>
             <el-form-item label="联系电话" :label-width="formLabelWidth">
-            <el-input v-model="form1.phone" auto-complete="off"></el-input>
+            <el-input v-model="form1.phone" auto-complete="off" @blur="testPhone(val='修改')"></el-input>
+            </el-form-item>
+            <el-form-item label="总部名称" :label-width="formLabelWidth">
+              <el-input v-model="form1.admin" auto-complete="off" :disabled="true" placeholder="总部"></el-input>
+            </el-form-item>
+            <el-form-item label="大区名称" :label-width="formLabelWidth">
+              <el-select v-model="form.tera" placeholder="请选择大区"  @change="getCompany()">
+                <el-option label="请选择" value=""></el-option>
+                <el-option :label="item.name" :value="item.c_id" v-for="(item,index) in optionCompany"></el-option>
+              </el-select>
             </el-form-item>
             <el-form-item label="公司名称" :label-width="formLabelWidth">
-            <el-select v-model="form1.region" placeholder="请选择公司"  @change="getZhan()">
+            <el-select v-model="form.region" placeholder="请选择公司"  @change="getZhan()">
+              <el-option label="请选择" value=""></el-option>
                 <el-option :label="item.name" :value="item.c_id" v-for="(item,index) in options"></el-option>
               </el-select>
             </el-form-item>
              <el-form-item label="所在站点" :label-width="formLabelWidth">
             <el-select v-model="form1.zhan" placeholder="请选择站点">
+              <el-option label="请选择" value=""></el-option>
                 <el-option  :label="item.name" :value="item.c_id" v-for="(item,index) in options1"></el-option>
               </el-select>
             </el-form-item>
@@ -199,6 +221,7 @@ export default {
       tableData: [],
       options: [],
       options1: [],
+      optionCompany:[],
       arr: [],
       userNam: "",
       checkedAll: false,
@@ -217,7 +240,9 @@ export default {
         com: "",
         region: "",
         zhan: "",
-        email: ""
+        email: "",
+        admin:"",
+        tera:""
       },
       form1: {
         name: "",
@@ -227,7 +252,9 @@ export default {
         com: "",
         region: "",
         zhan: "",
-        email: ""
+        email: "",
+        admin:"",
+        tera:""
       },
       dialogFormVisible: false,
       formLabelWidth: "120px",
@@ -248,14 +275,26 @@ export default {
     add() {
       //   this.$router.push({ path: '/userAdd' });
       // 添加   弹框
-      this.getCity(); // 获取公司
+      this.getArea(); // 获取大区
+
+      this.form.name = '';
+      this.form.username = '';
+      this.form.password = '';
+      this.form.phone = '';
+      this.form.com = '';
+      this.form.tera = '';
+      this.form.region = '';
+      this.form.zhan = '';
+      this.form.email = '';
+
+      this.dialogFormVisible = true;
     },
-    getCity() {
-      let that = this;
+    getArea(){
+       let that = this;
       this.$axios({
         url: "http://www.zjcoldcloud.com/bqs/backend/web/index.php/company/company",
         method: "post",
-        data: { level: 3,token: window.sessionStorage.getItem("token") },
+        data: { level: 2,token: window.sessionStorage.getItem("token") },
         transformRequest: [
           function(data) {
             let ret = "";
@@ -272,16 +311,51 @@ export default {
         headers: { "Content-Type": "application/x-www-form-urlencoded" }
       }).then(function(res) {
         if(res.data.code == '0'){
-      that.dialogFormVisible = true;
+      
           
-          that.options = res.data.data;
+          that.optionCompany = res.data.data;
         }else if(res.data.code == '450'){
           that.$message("暂无权限");
         }
         
       });
     },
+    getCompany(){
+      // 点 大区  获取  公司
+      let that = this;
+      this.$axios({
+        url: "http://www.zjcoldcloud.com/bqs/backend/web/index.php/company/next",
+        method: "post",
+        data: { pid: this.form.tera,token: window.sessionStorage.getItem("token") },
+        transformRequest: [
+          function(data) {
+            let ret = "";
+            for (let it in data) {
+              ret +=
+                encodeURIComponent(it) +
+                "=" +
+                encodeURIComponent(data[it]) +
+                "&";
+            }
+            return ret;
+          }
+        ],
+        headers: { "Content-Type": "application/x-www-form-urlencoded" }
+      }).then(function(res) {
+        if(res.data.code == '0'){
+          that.options = res.data.data;
+          // console.log(res.data.data);
+        }else if(res.data.code == '450'){
+          that.$message("暂无权限");
+        }else if(res.data.code == '2'){
+          that.options = [];
+        }
+        
+      });
+    },
     getZhan() {
+      this.form1.zhan = '';
+      this.form.zhan = '';
       // 获取站点  根据所点公司
       let that = this;
       this.$axios({
@@ -303,17 +377,29 @@ export default {
         ],
         headers: { "Content-Type": "application/x-www-form-urlencoded" }
       }).then(function(res) {
-        that.options1 = res.data.data;
+        if(res.data.code == '0'){
+          that.options1 = res.data.data;
+        }else{
+          that.options1 = [];
+        }
+        
       });
     },
     addOrder() {
       // 添加  提交
+      // form.admin  总部
+      // form.tera  大区
       let id = "";
-      if (this.form.zhan == "") {
+      if(this.form.tera == ""){
+        id = 1;
+      }else if(this.form.region == ""){
+        id = this.form.tera;
+      }else if(this.form.zhan == ""){
         id = this.form.region;
-      } else {
+      }else{
         id = this.form.zhan;
       }
+     
       let that = this;
       this.$axios({
         url: "http://www.zjcoldcloud.com/bqs/backend/web/index.php/user/add",
@@ -349,6 +435,8 @@ export default {
           that.getData();
         }else if(res.data.code == '450'){
           that.$message("暂无权限");
+        }else{
+          that.$message(res.data.message);
         }
         
       });
@@ -366,7 +454,10 @@ export default {
           type: "error"
         });
       } else {
-        this.getCity();
+        this.getArea();
+        this.form.tera = '';
+        this.form.region = '';
+        this.form1.zhan = '';
         let that = this;
         this.$axios({
           url: `http://www.zjcoldcloud.com/bqs/backend/web/index.php/user/update?id=${this.arr.join(",")}&token=${window.sessionStorage.getItem("token")}`,
@@ -405,9 +496,13 @@ export default {
     editOrder() {
       // 修改  提交
       let editId = "";
-      if (this.form1.zhan == "") {
-        editId = this.form1.region;
-      } else {
+      if(this.form.tera == ""){
+        editId = 1;
+      }else if(this.form.region == ""){
+        editId = this.form.tera;
+      }else if(this.form1.zhan == ""){
+        editId = this.form.region;
+      }else{
         editId = this.form1.zhan;
       }
       let that = this;
@@ -530,11 +625,13 @@ export default {
         ],
         headers: { "Content-Type": "application/x-www-form-urlencoded" }
       }).then(function(res) {
-        if(res.data.code == '0'){
-          that.tableData = res.data.data.data;
-          that.ccc = Number(res.data.data.count) || 0;
-        }else if(res.data.code == '450'){
+           that.tableData = res.data.data.data;
+           that.ccc = Number(res.data.data.count) || 0;
+        if(res.data.code == '450'){
           that.$message("暂无权限");
+        }else if(res.data.code == '400'){
+          that.$message("请先登录");
+          that.$router.push("/");
         }
         
       });
@@ -713,6 +810,55 @@ export default {
     },
     judge(data){
         return data.status==1 ? '启用' : '禁用'
+    },
+    testChina(val){
+      // 验证  姓名
+      //this.form.name
+      let reg = /^[\u4E00-\u9FA5]{2,4}$/;
+      if(val=='添加'){
+        if(!reg.test(this.form.name)){
+          this.$message('请输入正确的姓名');
+          this.form.name = '';
+        }
+      }else{
+        if(!reg.test(this.form1.name)){
+          this.$message('请输入正确的姓名');
+          this.form1.name = '';
+        }
+      }
+      
+    },
+    testEmail(val){
+      // 验证  邮箱
+      let reg = /^([a-zA-Z0-9_\.\-]{4,})+@([a-zA-Z0-9]+\.)+(com|cn|net|org)$/;
+      if(val=='添加'){
+        if(!reg.test(this.form.email)){
+          this.$message('请输入正确的邮箱');
+          this.form.email = '';
+        }
+      }else{
+        if(!reg.test(this.form1.email)){
+          this.$message('请输入正确的邮箱');
+          this.form1.email = '';
+        }
+      }
+      
+    },
+    testPhone(val){
+      // 验证  手机号
+      let myreg=/^[1][3,4,5,7,8][0-9]{9}$/;  
+      if(val=='添加'){
+        if (!myreg.test(this.form.phone)) {  
+              this.$message('请输入正确的手机号');
+              this.form.phone = '';
+          } 
+      }else{
+        if (!myreg.test(this.form1.phone)) {  
+              this.$message('请输入正确的手机号');
+              this.form1.phone = '';
+          } 
+      }
+          
     }
   },
   filters: {

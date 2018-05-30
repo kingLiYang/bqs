@@ -26,7 +26,7 @@ export default {
       items:[]
       // items: [
       //   {
-      //     icon: "el-icon-setting",
+      //     icon: "el-icon-edit",
       //     action: "readme",
       //     name: "首页",
       //     son:[{
@@ -35,7 +35,7 @@ export default {
       //     }]
       //   },
       //   {
-      //     icon: "el-icon-menu",
+      //     icon: "el-icon-document",
       //     action: "2",
       //     name: "系统设置",
       //     son: [
@@ -77,7 +77,7 @@ export default {
     }
   },
   created(){
-    this.items = JSON.parse(window.sessionStorage.getItem("items"));
+     this.items = JSON.parse(window.sessionStorage.getItem("items"));
   }
 };
 </script>
