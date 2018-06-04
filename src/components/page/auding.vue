@@ -15,9 +15,8 @@
                 <el-input placeholder="请输入名称" v-model="iceName"></el-input>
             </el-form-item>
             <el-form-item label="转运中心">
-              <el-select v-model="form1.region" placeholder="请选择">
-                  <el-option label="请选择" value=""></el-option>
-                <el-option :label="item.name" :value="item.pid_path" v-for="(item,index) in optionsZhan"></el-option>
+              <el-select v-model="form1.region" filterable placeholder="请选择">
+                <el-option :label="item.name" :value="item.pid_path" v-for="(item,index) in optionsZhan" :key="index"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="当前状态" >
@@ -40,13 +39,12 @@
               style="width: 100%"
               @selection-change="handleSelectionChange">
               <el-table-column
-                type="selection"
-                width="55">
+                type="selection">
               </el-table-column>
               <el-table-column
                 type="index"
                 label="序号"
-                width="100">
+                width="60">
               </el-table-column>
               <!-- <el-table-column
                 prop="username"
@@ -205,6 +203,7 @@ export default {
       }).then(function(res) {
         if(res.data.code == '0'){
           that.optionsZhan = res.data.data;
+          that.optionsZhan.unshift({name:"请选择",pid_path:''});
         }else if(res.data.code == '450'){
           that.$message("暂无权限");
         }

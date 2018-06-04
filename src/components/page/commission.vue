@@ -10,9 +10,8 @@
                 <el-input placeholder="请输入名称" v-model="iceName"></el-input>
             </el-form-item>
             <el-form-item label="转运中心">
-              <el-select v-model="form1.region" placeholder="请选择">
-                <el-option label="请选择" value=""></el-option>
-                <el-option :label="item.name" :value="item.pid_path" v-for="(item,index) in optionsZhan"></el-option>
+              <el-select v-model="form1.region" filterable placeholder="请选择">
+                <el-option :label="item.name" :value="item.pid_path" v-for="(item,index) in optionsZhan" :key="index"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item>
@@ -155,6 +154,7 @@ export default {
       }).then(function(res) {
         if(res.data.code == '0'){
           that.optionsZhan = res.data.data;
+          that.optionsZhan.unshift({name:"请选择",pid_path:''});
         }else if(res.data.code == '450'){
           that.$message("暂无权限");
         }

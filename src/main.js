@@ -9,6 +9,7 @@ import "babel-polyfill";
 
 Vue.use(ElementUI);
 Vue.prototype.$axios = axios;
+Vue.config.productionTip = false;// 去除console提示
 
 //判断 开发环境 生产环境
 if (process.env.NODE_ENV !== 'development') {

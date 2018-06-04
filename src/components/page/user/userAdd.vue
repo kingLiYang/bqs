@@ -43,8 +43,13 @@
             <!-- <el-input auto-complete="off" v-model="form1.name"></el-input> -->
             <el-select  v-model="form1.name"  placeholder="请选择车辆类型" :disabled="inputSta">
                   <el-option label="请选择" value=""></el-option>
-                <el-option label="奔驰" value="奔驰"></el-option>
-                <el-option label="宾利" value="宾利"></el-option>
+                <el-option label="小面包车" value="小面包车"></el-option>
+                <el-option label="中面包车" value="中面包车"></el-option>
+                <el-option label="小货车" value="小货车"></el-option>
+                <el-option label="中货车" value="中货车"></el-option>
+                <el-option label="大货车" value="大货车"></el-option>
+                <el-option label="其它" value="其它"></el-option>
+                
                 </el-select>
         </el-form-item>
         <el-form-item label="车身长宽高">

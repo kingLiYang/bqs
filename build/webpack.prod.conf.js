@@ -28,9 +28,11 @@ var webpackConfig = merge(baseWebpackConfig, {
     }),
     new webpack.optimize.UglifyJsPlugin({
       compress: {
-        warnings: false
+        warnings: false,
+        drop_console:true,
+        drop_debugger:true
       },
-      sourceMap: true
+      sourceMap:  config.build.productionSourceMap, parallel: true 
     }),
     // extract css into its own file
     new ExtractTextPlugin({

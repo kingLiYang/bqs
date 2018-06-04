@@ -77,12 +77,12 @@
             </el-form-item>
             <el-form-item label="所在省份" :label-width="formLabelWidth">
              <el-select v-model="form.region" placeholder="请选择省份" @change="getCity()">
-                 <el-option  :label="item.name" :value="item.id" v-for="(item,index) in getSheng"></el-option>
+                 <el-option  :label="item.name" :value="item.id" v-for="(item,index) in getSheng" :key="index"></el-option>
             </el-select>
             </el-form-item>
             <el-form-item label="所在城市" :label-width="formLabelWidth">
              <el-select v-model="form.region1" placeholder="请选择城市">
-                 <el-option  :label="item.name" :value="item.id" v-for="(item,index) in getAllCity"></el-option>
+                 <el-option  :label="item.name" :value="item.id" v-for="(item,index) in getAllCity" :key="index"></el-option>
             </el-select>
             </el-form-item>
         </el-form>
@@ -148,7 +148,7 @@
         </div>
         </el-dialog>
         <!-- 查看城市  弹框 -->
-        <el-dialog title="分配城市" :visible.sync="seeVisible">
+        <el-dialog title="查看城市" :visible.sync="seeVisible">
         <el-form :model="form">
             <div>
               <ul style="display:flex;width:100%;flex-wrap:wrap;">
@@ -343,10 +343,12 @@ export default {
             that.show();
           }else if(res.data.code == '450'){
               that.$message("暂无权限");
+            }else{
+              that.$message(res.data.message);
             }
         });
       }else{
-        this.$message("暂无权限")
+        this.$message("请输入完整信息");
       }
     },
     editChild(e) {

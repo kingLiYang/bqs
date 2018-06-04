@@ -22,7 +22,7 @@
           <el-row>
             <el-form-item label="公司">
               <el-select v-model="region" placeholder="请选择公司">
-                <el-option :label="item.name" :value="item.pid" v-for="(item,index) in options"></el-option>
+                <el-option :label="item.name" :value="item.pid" v-for="(item,index) in options" :key="index"></el-option>
               </el-select>
             </el-form-item> 
           </el-row>

@@ -15,9 +15,8 @@
                 <el-input placeholder="请输入姓名" v-model="userNam"></el-input>
             </el-form-item>
             <el-form-item label="公司">
-              <el-select v-model="form1.region" placeholder="请选择">
-                <el-option label='请选择' value=''></el-option>
-                <el-option :label="item.name" :value="item.pid_path" v-for="(item,index) in optionsZhan"></el-option>
+              <el-select v-model="form1.region" filterable  placeholder="请选择">
+                <el-option :label="item.name" :value="item.pid_path" v-for="(item,index) in optionsZhan" :key="index"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item>
@@ -122,27 +121,21 @@
         </el-dialog>
 
         <!-- 删除   弹框 -->
-        <el-dialog
-            title="提示"
-            :visible.sync="dialogVisible"
-            width="30%">
-            <h3 style="text-align:center;">确定删除吗？</h3>
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="dialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="delOrder()">确 定</el-button>
-            </span>
-            </el-dialog>
-
-
+        <deleteDia :dialogVisible = "dialogVisible" :categoryid = 'categoryid' v-on:changeCart="changeCart"></deleteDia>
     </div>
 </template>
 
 <script>
 import { formatDate } from "./../../js/data";
+import  deleteDia from "./pubilc/delete.vue";
 export default {
+  components:{
+      deleteDia
+    },
   data() {
     return {
       tableData: [],
+      categoryid: '',
       options: [],
       options1: [],
       optionsZhan: [],
@@ -209,6 +202,7 @@ export default {
       }).then(function(res) {
         if (res.data.code == "0") {
           that.optionsZhan = res.data.data;
+          that.optionsZhan.unshift({name:"请选择",pid_path:''});
         } else if (res.data.code == "450") {
           that.$message("暂无权限");
         }
@@ -379,46 +373,18 @@ export default {
         });
       } else {
         this.dialogVisible = true;
+        let obj = {
+          id : this.arr.join(","),
+          token: window.sessionStorage.getItem("token")
+        }
+        this.categoryid = obj;
       }
     },
-    delOrder() {
-      // 删除  提交
-      let that = this;
-      this.$axios({
-        url:
-          "http://www.zjcoldcloud.com/bqs/backend/web/index.php/knight/delete",
-        method: "post",
-        data: {
-          id: this.arr.join(","),
-          token: window.sessionStorage.getItem("token")
-        },
-        transformRequest: [
-          function(data) {
-            let ret = "";
-            for (let it in data) {
-              ret +=
-                encodeURIComponent(it) +
-                "=" +
-                encodeURIComponent(data[it]) +
-                "&";
-            }
-            return ret;
-          }
-        ],
-        headers: { "Content-Type": "application/x-www-form-urlencoded" }
-      }).then(function(res) {
-        if (res.data.code == 0) {
-          that.dialogVisible = false;
-          that.$message("删除成功");
-          that.arr = [];
-          that.checkedAll = false;
-          that.isChecked = false;
-          that.getData();
-        } else if (res.data.code == "450") {
-          that.$message("暂无权限");
-        }
-      });
-    },
+   changeCart(){
+     // 删除  提交完成  子传父
+     this.dialogVisible = false;
+     this.getData();
+   },
     handleCurrentChange(val) {
       this.checkedAll = false;
       this.isChecked = false;
@@ -428,6 +394,7 @@ export default {
     },
     getData() {
       // 查询
+
       let that = this;
       this.$axios({
         url: this.URL_API + "/bqs/backend/web/index.php/knight/list",

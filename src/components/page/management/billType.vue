@@ -23,33 +23,33 @@
         <el-row>
             <el-form-item label="省份">
                <el-select  v-model="form.region"  placeholder="请选择" @change="getCity()">
-                    <el-option  :label="item.name" :value="item.id" v-for="(item,index) in getSheng"></el-option>
+                    <el-option  :label="item.name" :value="item.id" v-for="(item,index) in getSheng" :key="index"></el-option>
                </el-select>
             </el-form-item>
             <el-form-item label="城市">
                 <el-select v-model="form.region1" placeholder="请选择" @change="getZhan()">
                   <el-option label='请选择' value=''></el-option>
-                    <el-option  :label="item.name" :value="item.id" v-for="(item,index) in getAllCity"></el-option>
+                    <el-option  :label="item.name" :value="item.id" v-for="(item,index) in getAllCity" :key="index"></el-option>
                 </el-select>
             </el-form-item>
             <el-form-item label="站点">
                 <el-select v-model="form.region2" placeholder="请选择" @change="getMan()">
                   <el-option label='请选择' value=''></el-option>
-                    <el-option  :label="item.name" :value="item.c_id" v-for="(item,index) in getAllZhan"></el-option>
+                    <el-option  :label="item.name" :value="item.c_id" v-for="(item,index) in getAllZhan" :key="index"></el-option>
                 </el-select>
             </el-form-item>
             <el-form-item label="站点人员">
                 <el-select v-model="form.region3" placeholder="请选择">
                   <el-option label='请选择' value=''></el-option>
-                    <el-option  :label="item.relly_name" :value="item.u_id" v-for="(item,index) in getAllMan"></el-option>
+                    <el-option  :label="item.relly_name" :value="item.u_id" v-for="(item,index) in getAllMan" :key="index"></el-option>
                 </el-select>
             </el-form-item>
                 <el-form-item label="规定时间">
                 <el-date-picker
                     v-model="value1"
                     type="datetime"
-                    format="yyyy-MM-dd HH-mm-ss"
-                    value-format="yyyy-MM-dd HH-mm-ss"
+                    format="yyyy-MM-dd HH:mm:ss"
+                    value-format="yyyy-MM-dd HH:mm:ss"
                     @change="changeTime"
                     placeholder="选择日期时间"
                     align="right"
@@ -76,6 +76,7 @@
                     v-model="value2"
                     type="datetime"
                     placeholder="选择日期时间"
+                    @change="changeTime2"
                     align="right"
                     :picker-options="pickerOptions1">
                 </el-date-picker>
@@ -99,6 +100,7 @@
                     v-model="value3"
                     type="datetime"
                     placeholder="选择日期时间"
+                    @change="changeTime3"
                     align="right"
                     :picker-options="pickerOptions1">
                 </el-date-picker>
@@ -111,26 +113,26 @@
         <el-row>
             <el-form-item label="省份">
                <el-select  v-model="form3.region"  placeholder="请选择" @change="getCity1()">
-                    <el-option  :label="item.name" :value="item.id" v-for="(item,index) in getSheng"></el-option>
+                    <el-option  :label="item.name" :value="item.id" v-for="(item,index) in getSheng" :key="index"></el-option>
                </el-select>
             </el-form-item>
             <el-form-item label="城市">
                 <el-select v-model="form3.region1" placeholder="请选择" @change="getZhan1()">
                   <el-option label='请选择' value=''></el-option>
-                    <el-option  :label="item.name" :value="item.id" v-for="(item,index) in getAllCity1"></el-option>
+                    <el-option  :label="item.name" :value="item.id" v-for="(item,index) in getAllCity1" :key="index"></el-option>
                 </el-select>
             </el-form-item>
             <el-form-item label="站点">
                 <el-select v-model="form3.region2" placeholder="请选择" @change="getMan1()">
               <el-option label='请选择' value=''></el-option>
                   
-                    <el-option  :label="item.name" :value="item.c_id" v-for="(item,index) in getAllZhan1"></el-option>
+                    <el-option  :label="item.name" :value="item.c_id" v-for="(item,index) in getAllZhan1" :key="index"></el-option>
                 </el-select>
             </el-form-item>
             <el-form-item label="站点人员">
                 <el-select v-model="form3.region3" placeholder="请选择">
                   <el-option label='请选择' value=''></el-option>
-                    <el-option  :label="item.relly_name" :value="item.u_id" v-for="(item,index) in getAllMan1"></el-option>
+                    <el-option  :label="item.relly_name" :value="item.u_id" v-for="(item,index) in getAllMan1" :key="index"></el-option>
                 </el-select>
             </el-form-item>
                 <el-form-item label="规定时间">
@@ -138,6 +140,7 @@
                     v-model="value4"
                     type="datetime"
                     placeholder="选择日期时间"
+                    @change="changeTime4"
                     align="right"
                     :picker-options="pickerOptions1">
                     </el-date-picker>
@@ -150,25 +153,25 @@
         <el-row>
             <el-form-item label="省份">
                <el-select  v-model="form4.region"  placeholder="请选择" @change="getCity2()">
-                    <el-option  :label="item.name" :value="item.id" v-for="(item,index) in getSheng"></el-option>
+                    <el-option  :label="item.name" :value="item.id" v-for="(item,index) in getSheng" :key="index"></el-option>
                </el-select>
             </el-form-item>
             <el-form-item label="城市">
                 <el-select v-model="form4.region1" placeholder="请选择" @change="getZhan2()">
                   <el-option label='请选择' value=''></el-option>
-                    <el-option  :label="item.name" :value="item.id" v-for="(item,index) in getAllCity2"></el-option>
+                    <el-option  :label="item.name" :value="item.id" v-for="(item,index) in getAllCity2" :key="index"></el-option>
                 </el-select>
             </el-form-item>
             <el-form-item label="站点">
                 <el-select v-model="form4.region2" placeholder="请选择" @change="getKnight2()">
                   <el-option label='请选择' value=''></el-option>
-                    <el-option  :label="item.name" :value="item.pid_path" v-for="(item,index) in getAllZhan2"></el-option>
+                    <el-option  :label="item.name" :value="item.pid_path" v-for="(item,index) in getAllZhan2" :key="index"></el-option>
                 </el-select>
             </el-form-item>
             <el-form-item label="骑士">
                 <el-select v-model="form4.region3" placeholder="请选择">
                   <el-option label='请选择' value=''></el-option>
-                    <el-option  :label="item.relly_name" :value="item.k_id" v-for="(item,index) in getAllKnight"></el-option>
+                    <el-option  :label="item.relly_name" :value="item.k_id" v-for="(item,index) in getAllKnight" :key="index"></el-option>
                 </el-select>
             </el-form-item>
             </el-row>
@@ -726,7 +729,16 @@ export default {
       });
     },
     changeTime(val){
-      console.log(val,111);
+      this.value1 = val;
+    },
+    changeTime2(val){
+      this.value2 = val;
+    },
+    changeTime3(val){
+      this.value3 = val;
+    },
+    changeTime4(val){
+      this.value4 = val;
     },
     testPhone(val){
       // 验证  手机号

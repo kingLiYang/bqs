@@ -13,10 +13,10 @@ export default new Router({
             path: '/home',
             component: resolve => require(['../components/common/Home.vue'], resolve),
             children:[
-                {
-                    path: '/',
-                    component: resolve => require(['../components/page/Readme.vue'], resolve)
-                },
+                // {
+                //     path: '/',
+                //     component: resolve => require(['../components/page/Readme.vue'], resolve)
+                // },
                 {
                     path: '/basetable',                                                             // 用户管理
                     component: resolve => require(['../components/page/BaseTable.vue'], resolve)
@@ -45,10 +45,6 @@ export default new Router({
                     path: '/oldCharts',                                                              // 冰骑士管理
                     component: resolve => require(['../components/page/OldCharts.vue'], resolve)
                 },
-                // {
-                //     path: '/text',                                                                 // 练习
-                //     component: resolve => require(['../components/page/text.vue'], resolve)
-                // },
                 {
                     path:'/waybill',                                                           // 运单管理
                     component: resolve => require(['../components/page/management/waybill.vue'], resolve)
@@ -68,18 +64,6 @@ export default new Router({
                 {
                     path: '/auding',
                     component: resolve => require(['../components/page/auding.vue'], resolve)     // 提现审核管理
-                },
-                {
-                    path: '/upload',
-                    component: resolve => require(['../components/page/Upload.vue'], resolve)       // Vue-Core-Image-Upload组件
-                },
-                {
-                    path: '/basecharts',
-                    component: resolve => require(['../components/page/BaseCharts.vue'], resolve)   // vue-schart组件
-                },
-                {
-                    path: '/drag',
-                    component: resolve => require(['../components/page/DragList.vue'], resolve)    // 拖拽列表组件
                 }
             ]
         },

@@ -114,19 +114,19 @@
             <el-form-item label="大区名称" :label-width="formLabelWidth">
               <el-select v-model="form.tera" placeholder="请选择大区"  @change="getCompany()">
                 <el-option label="请选择" value=""></el-option>
-                <el-option :label="item.name" :value="item.c_id" v-for="(item,index) in optionCompany"></el-option>
+                <el-option :label="item.name" :value="item.c_id" v-for="(item,index) in optionCompany" :key="index"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="公司名称" :label-width="formLabelWidth">
             <el-select v-model="form.region" placeholder="请选择公司"  @change="getZhan()">
               <el-option label="请选择" value=""></el-option>
-                <el-option :label="item.name" :value="item.c_id" v-for="(item,index) in options"></el-option>
+                <el-option :label="item.name" :value="item.c_id" v-for="(item,index) in options" :key="index"></el-option>
               </el-select>
             </el-form-item>
              <el-form-item label="所在站点" :label-width="formLabelWidth">
             <el-select v-model="form.zhan" placeholder="请选择站点">
               <el-option label="请选择" value=""></el-option>
-                <el-option  :label="item.name" :value="item.c_id" v-for="(item,index) in options1"></el-option>
+                <el-option  :label="item.name" :value="item.c_id" v-for="(item,index) in options1" :key="index"></el-option>
               </el-select>
             </el-form-item>
         </el-form>
@@ -160,19 +160,19 @@
             <el-form-item label="大区名称" :label-width="formLabelWidth">
               <el-select v-model="form.tera" placeholder="请选择大区"  @change="getCompany()">
                 <el-option label="请选择" value=""></el-option>
-                <el-option :label="item.name" :value="item.c_id" v-for="(item,index) in optionCompany"></el-option>
+                <el-option :label="item.name" :value="item.c_id" v-for="(item,index) in optionCompany" :key="index"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="公司名称" :label-width="formLabelWidth">
             <el-select v-model="form.region" placeholder="请选择公司"  @change="getZhan()">
               <el-option label="请选择" value=""></el-option>
-                <el-option :label="item.name" :value="item.c_id" v-for="(item,index) in options"></el-option>
+                <el-option :label="item.name" :value="item.c_id" v-for="(item,index) in options" :key='index'></el-option>
               </el-select>
             </el-form-item>
              <el-form-item label="所在站点" :label-width="formLabelWidth">
             <el-select v-model="form1.zhan" placeholder="请选择站点">
               <el-option label="请选择" value=""></el-option>
-                <el-option  :label="item.name" :value="item.c_id" v-for="(item,index) in options1"></el-option>
+                <el-option  :label="item.name" :value="item.c_id" v-for="(item,index) in options1" :key="index"></el-option>
               </el-select>
             </el-form-item>
         </el-form>
