@@ -168,6 +168,12 @@ export default {
       inputSta:false
     };
   },
+   beforeCreate(){
+    let token = window.sessionStorage.getItem('token');
+    if(token == ''|| token == undefined){
+      this.$router.push('/');
+    }
+  },
   created() {
     // 获取 ID
     this.id = this.$route.query.id;
@@ -649,7 +655,7 @@ export default {
     },
     textPhone(){
       // 验证  紧急联系电话
-      let myreg = /^[1][3,4,5,7,8][0-9]{9}$/;
+      let myreg = /^[1][3,4,5,6,7,8][0-9]{9}$/;
       if (!myreg.test(this.form.phone)) {
         this.$message("请输入正确的联系方式");
         this.form.phone = "";

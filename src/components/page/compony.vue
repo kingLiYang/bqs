@@ -200,6 +200,12 @@ export default {
       isAllot:""
     };
   },
+   beforeCreate(){
+    let token = window.sessionStorage.getItem('token');
+    if(token == ''|| token == undefined){
+      this.$router.push('/');
+    }
+  },
   created() {
     this.show(); // 组件刚渲染  获取数据
   },

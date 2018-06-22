@@ -73,10 +73,10 @@
               <el-table-column
                 label="操作" width="300">
                 <template slot-scope="scope" >
-                  <el-button type="primary" size="small" round @click.native.prevent="editChild(scope.row)" v-if="scope.row.status == '0'">修改信息</el-button>
+                  <el-button type="primary" size="small" round @click.native.prevent="editChild(scope.row)" v-if="scope.row.status == '0' || scope.row.status == '6'">修改信息</el-button>
                   <el-button type="warning" size="small" round @click.native.prevent="seeChild(scope.row)" v-if="scope.row.status == '0' || scope.row.status == '6'">指派骑士</el-button>
                   <el-button type="primary" size="small" round @click.native.prevent="details(scope.row)">详情</el-button>
-                  <el-button type="danger" size="small" round @click.native.prevent="delChild(scope.row)" v-if="scope.row.status == '0'">删除</el-button>
+                  <el-button type="danger" size="small" round @click.native.prevent="delChild(scope.row)" v-if="scope.row.status == '0' || scope.row.status == '6'">删除</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -102,13 +102,13 @@
             
           </el-form>
          <el-row style="margin: 10px 0 0 0;">
-            <el-col :span="24" class="row-bg"><div>揽派：在同一个城市从发件人手中揽件，给收件人派件</div></el-col>
+            <el-col :span="24" class="row-bg"><div>揽派：同一个城市从发件客户揽件，给收件客户派件</div></el-col>
           </el-row>
           <el-row>
-            <el-col :span="24" class="row-bg"><div>揽件：在同一个城市从发件人手中揽件，在另一个城市给收件人派件，只涉及揽件过程</div></el-col>
+            <el-col :span="24" class="row-bg"><div>揽件：始发城市从发件客户处揽件，给目的城市收件客户派件，只涉及揽件过程</div></el-col>
           </el-row>
           <el-row>
-            <el-col :span="24" class="row-bg"><div>派件：在一个城市从发件人手中揽件，在另一个城市给收件人派件，只涉及派件过程</div></el-col>
+            <el-col :span="24" class="row-bg"><div>派件：始发城市从发件客户处揽件，给目的城市收件客户派件，只涉及派件过程</div></el-col>
           </el-row>
           <el-row>
             <el-col :span="24" class="row-bg"><div>转运：在同一城市从转运中心A揽件，给转运中心B派件</div></el-col>
@@ -122,12 +122,12 @@
           <el-form v-model="form4" :inline="true">
             <el-row>
             <el-form-item label="省份">
-               <el-select  v-model="form4.region"  placeholder="请选择" @change="getCity2()">
+               <el-select  v-model="form4.region"  placeholder="请选择" @change="getCity2()" :disabled="isDisabled">
                     <el-option  :label="item.name" :value="item.id" v-for="(item,index) in getSheng" :key="index"></el-option>
                </el-select>
             </el-form-item>
             <el-form-item label="城市">
-                <el-select v-model="form4.region1" placeholder="请选择" @change="getZhan2()">
+                <el-select v-model="form4.region1" placeholder="请选择" @change="getZhan2()" :disabled="isDisabled">
                   <el-option label='请选择' value=''></el-option>
                     <el-option  :label="item.name" :value="item.id" v-for="(item,index) in getAllCity2" :key="index"></el-option>
                 </el-select>
@@ -178,6 +178,7 @@ export default {
       arr: [],
       checkedAll: false,
       isChecked: false,
+      isDisabled:  false,
       dialogVisible: false,
       form1: {
         region: ""
@@ -202,6 +203,12 @@ export default {
       getAllCity2:[]
       
     };
+  },
+   beforeCreate(){
+    let token = window.sessionStorage.getItem('token');
+    if(token == ''|| token == undefined){
+      this.$router.push('/');
+    }
   },
   created() {
     this.getData();// 获取列表
@@ -316,14 +323,57 @@ export default {
     },
     seeChild(rows){
       // 指派骑士
-      this.huoquSheng();
       this.knight_tid = rows.order_id;
       this.form4.region = '';
       this.form4.region1 = '';
       this.form4.region2 = '';
       this.form4.region3 = '';
-
+      this.getDefaultCity();
       this.dialogNight = true;
+    },
+    getDefaultCity() {
+      // 获取  默认  城市
+      let that = this;
+      this.$axios({
+        url: this.URL_API + "/bqs/backend/web/index.php/order/default",
+        method: "post",
+        data: {
+          token: window.sessionStorage.getItem("token")
+        },
+        transformRequest: [
+          function(data) {
+            let ret = "";
+            for (let it in data) {
+              ret +=
+                encodeURIComponent(it) +
+                "=" +
+                encodeURIComponent(data[it]) +
+                "&";
+            }
+            return ret;
+          }
+        ],
+        headers: { "Content-Type": "application/x-www-form-urlencoded" }
+      }).then(function(res) {
+        if (res.data.code == "0") {
+          if (Number(res.data.data.station.length) == 0) {
+            that.isDisabled = false;
+            that.huoquSheng();
+          } else {
+            that.isDisabled = true;
+            that.form4.region = res.data.data.province; // 骑士 信息   省份
+            that.form4.region1 = res.data.data.city; // 骑士 信息 chengshi
+            that.getAllZhan2 = res.data.data.station;
+          }
+        } else if (res.data.code == "450") {
+          that.$message("暂无权限");
+        } else if (res.data.code == "400") {
+          that.$message("请先登录");
+          that.$router.push("/");
+        } else {
+          that.$message(res.data.message);
+        }
+      });
     },
     editChild(rows){
       // 修改信息   条页面
@@ -360,7 +410,8 @@ export default {
       });
     },
     getCity2(){
-        this.form4.region1 = '';
+      if(this.isDisabled != true){
+this.form4.region1 = '';
         this.form4.region2 = '';
         let that = this;
       this.$axios({
@@ -384,9 +435,12 @@ export default {
       }).then(function(res) {
         that.getAllCity2 = res.data.data;
       });
+      }
+        
     },
     getZhan2(){
-        this.form4.region2 = '';
+      if(this.isDisabled != true){
+this.form4.region2 = '';
         this.form4.region3 = '';
         let that = this;
       this.$axios({
@@ -410,6 +464,8 @@ export default {
       }).then(function(res) {
         that.getAllZhan2 = res.data.data;
       });
+      }
+        
     },
     getKnight2(){
         this.form4.region3 = '';

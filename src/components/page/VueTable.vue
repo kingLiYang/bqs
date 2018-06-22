@@ -109,10 +109,11 @@
               show-checkbox
               node-key="o_id"
               ref="tree"
-              :default-expand-all=true
+              :default-expand-all='true'
               :default-checked-keys="data3"
               :props="defaultProps">
             </el-tree>
+
             <span slot="footer" class="dialog-footer">
                 <el-button @click="allotVisible = false">取 消</el-button>
                 <el-button type="primary" @click="allotOrder()">确 定</el-button>
@@ -152,6 +153,12 @@ export default {
     };
   },
   components: {},
+  beforeCreate(){
+    let token = window.sessionStorage.getItem('token');
+    if(token == ''|| token == undefined){
+      this.$router.push('/');
+    }
+  },
   created() {
     this.show(); // 刚进来的时候  请求数据
   },

@@ -1,15 +1,16 @@
 <template>
     <div class="table">
         <div class="divBut">
+
             <el-row>
                 <el-button type="primary" round @click="add()">添加账号</el-button>
                 <el-button type="primary" round @click='edit()'>修改账号</el-button>
                 <!-- <el-button type="primary" round @click="is_yes()">启用</el-button> -->
-                <el-button type="primary" round @click="del()">删除</el-button>
+                <el-button type="primary" circle @click="del()">删除</el-button>
                 <el-button type="primary" round @click="is_no()">导出</el-button>
             </el-row>
         </div>
-        <div class="divBut" style="margin:20px 0 0 0;">
+        <div class="divBut" style="margin:20px 0 0 0;display:flex;justify-content: space-between;">
          <el-form :inline="true" class="demo-form-inline">
             <el-form-item label="姓名">
                 <el-input placeholder="请输入姓名" v-model="userNam"></el-input>
@@ -23,12 +24,19 @@
                 <el-button type="primary" @click="searchUser()">查询</el-button>
             </el-form-item>
             </el-form>
+            <div style='text-align:right;'>
+          <div>
+            <span class='work'></span><span>上班</span>
+            <span class='fire'></span><span>下班</span>
+          </div>
         </div>
-
+        </div>
+        
            <!-- 表格 -->
              <el-table
               :data="tableData"
               style="width: 100%"
+              cell-class-name='sheyan'
               @selection-change="handleSelectionChange">
               <el-table-column
                 type="selection"
@@ -48,10 +56,20 @@
                 label="姓名">
               </el-table-column>
               <el-table-column
+                prop="company"
+                label="所属转运中心">
+              </el-table-column>
+              <el-table-column
                 prop="phone"
                 label="联系方式">
               </el-table-column>
-              
+              <el-table-column
+                label="工作状态">
+                <template slot-scope="scope" >
+                  <span class='work' v-if="scope.row.working_status == '1'"></span>
+                  <span class='fire' v-if="scope.row.working_status == '0'"></span>
+                </template>
+              </el-table-column>
               <el-table-column
                 label="创建时间">
                 <template slot-scope="scope">{{ scope.row.addtime | formatDate}}</template>
@@ -91,6 +109,11 @@
             <el-form-item label="联系方式" :label-width="formLabelWidth">
             <el-input v-model="form.phone" auto-complete="off" @blur="testPhone(val='添加')"></el-input>
             </el-form-item>
+            <el-form-item label="所属转运中心" :label-width="formLabelWidth">
+              <el-select v-model="form.region" filterable  placeholder="请选择">
+                <el-option :label="item.name" :value="item.pid_path" v-for="(item,index) in optionsZhan" :key="index"></el-option>
+              </el-select>
+            </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
             <el-button @click="dialogFormVisible = false">取 消</el-button>
@@ -127,15 +150,15 @@
 
 <script>
 import { formatDate } from "./../../js/data";
-import  deleteDia from "./pubilc/delete.vue";
+import deleteDia from "./pubilc/delete.vue";
 export default {
-  components:{
-      deleteDia
-    },
+  components: {
+    deleteDia
+  },
   data() {
     return {
       tableData: [],
-      categoryid: '',
+      categoryid: "",
       options: [],
       options1: [],
       optionsZhan: [],
@@ -153,7 +176,8 @@ export default {
         name: "",
         password: "",
         phone: "",
-        relly_name: ""
+        relly_name: "",
+        region: ""
       },
       form1: {
         name: "",
@@ -171,6 +195,12 @@ export default {
       id: "",
       currentPage: 1
     };
+  },
+   beforeCreate(){
+    let token = window.sessionStorage.getItem('token');
+    if(token == ''|| token == undefined){
+      this.$router.push('/');
+    }
   },
   created() {
     this.getData(); // 获取列表
@@ -202,7 +232,7 @@ export default {
       }).then(function(res) {
         if (res.data.code == "0") {
           that.optionsZhan = res.data.data;
-          that.optionsZhan.unshift({name:"请选择",pid_path:''});
+          that.optionsZhan.unshift({ name: "请选择", pid_path: "" });
         } else if (res.data.code == "450") {
           that.$message("暂无权限");
         }
@@ -330,6 +360,7 @@ export default {
             pwd: this.form.password, // 密码
             relly_name: this.form.relly_name, // 姓名
             phone: this.form.phone, // 手机号
+            company_path: this.form.region,
             token: window.sessionStorage.getItem("token")
           },
           transformRequest: [
@@ -374,17 +405,17 @@ export default {
       } else {
         this.dialogVisible = true;
         let obj = {
-          id : this.arr.join(","),
+          id: this.arr.join(","),
           token: window.sessionStorage.getItem("token")
-        }
-        this.categoryid = obj;
+        };
+        this.categoryid = JSON.stringify(obj);
       }
     },
-   changeCart(){
-     // 删除  提交完成  子传父
-     this.dialogVisible = false;
-     this.getData();
-   },
+    changeCart() {
+      // 删除  提交完成  子传父
+      this.dialogVisible = false;
+      this.getData();
+    },
     handleCurrentChange(val) {
       this.checkedAll = false;
       this.isChecked = false;
@@ -481,8 +512,8 @@ export default {
       }
     },
     testPhone(val) {
-      // 验证  联系方式
-      let myreg = /^[1][3,4,5,7,8][0-9]{9}$/;
+      // 验证  联系方式 111
+      let myreg = /^[1][3,4,5,6,7,8][0-9]{9}$/;
       if (val == "添加") {
         if (!myreg.test(this.form.phone)) {
           this.$message("请输入正确的联系方式");
@@ -498,8 +529,30 @@ export default {
     is_no() {
       require.ensure([], () => {
         const { export_json_to_excel } = require("../../js/Export2Excel");
-        const tHeader = ["姓名", "联系方式", "账号", "地址", "性别", "紧急联系人", "紧急联系人电话", "车牌号", "驾驶证类型", "银行卡号"];
-        const filterVal = ["relly_name", "phone", "username", "address", "sex", "help_user", "help_phone", "car_code", "driving_type","bank_coke"];
+        const tHeader = [
+          "姓名",
+          "联系方式",
+          "账号",
+          "地址",
+          "性别",
+          "紧急联系人",
+          "紧急联系人电话",
+          "车牌号",
+          "驾驶证类型",
+          "银行卡号"
+        ];
+        const filterVal = [
+          "relly_name",
+          "phone",
+          "username",
+          "address",
+          "sex",
+          "help_user",
+          "help_phone",
+          "car_code",
+          "driving_type",
+          "bank_coke"
+        ];
         const list = this.tableData;
         const data = this.formatJson(filterVal, list);
         export_json_to_excel(tHeader, data, "冰骑士信息列表");
@@ -515,7 +568,6 @@ export default {
       return formatDate(date, "yyyy-MM-dd hh:mm:ss");
     }
   }
-  
 };
 </script>
 
@@ -546,4 +598,19 @@ table {
   border-width: 1px 0px 0px 1px;
   border-collapse: collapse;
 }
+.work{
+  width:15px;
+  height:15px;
+  background: green;
+  border-radius: 50%;
+  display: inline-block;
+}
+.fire{
+  width:15px;
+  height:15px;
+  background: yellow;
+  border-radius: 50%;
+  display: inline-block;
+}
+
 </style>

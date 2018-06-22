@@ -13,10 +13,10 @@ export default new Router({
             path: '/home',
             component: resolve => require(['../components/common/Home.vue'], resolve),
             children:[
-                // {
-                //     path: '/',
-                //     component: resolve => require(['../components/page/Readme.vue'], resolve)
-                // },
+                {
+                    path: '/',
+                    component: resolve => require(['../components/page/Readme.vue'], resolve)
+                },
                 {
                     path: '/basetable',                                                             // 用户管理
                     component: resolve => require(['../components/page/BaseTable.vue'], resolve)
@@ -34,12 +34,8 @@ export default new Router({
                     component: resolve => require(['../components/page/compony.vue'], resolve)
                 },
                 {
-                    path:'/userAdd',                                                           // 用户添加
+                    path:'/userAdd',                                                           // 冰骑士 修改信息   查看信息
                     component: resolve => require(['../components/page/user/userAdd.vue'], resolve)
-                },
-                {
-                    path: '/userEdit',                                                          // 用户修改
-                    component: resolve => require(['../components/page/user/userEdit.vue'], resolve) 
                 },
                 {
                     path: '/oldCharts',                                                              // 冰骑士管理
@@ -64,6 +60,10 @@ export default new Router({
                 {
                     path: '/auding',
                     component: resolve => require(['../components/page/auding.vue'], resolve)     // 提现审核管理
+                },
+                {
+                    path: '/problem',
+                    component: resolve => require(['../components/page/problem.vue'], resolve)     // wen题反馈
                 }
             ]
         },

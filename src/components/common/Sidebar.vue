@@ -78,6 +78,7 @@ export default {
   },
   created(){
      this.items = JSON.parse(window.sessionStorage.getItem("items"));
+
   }
 };
 </script>

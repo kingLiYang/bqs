@@ -28,7 +28,7 @@
     //     required: true
     //   },
       categoryid:{
-        type: Object,
+        type: String,
         required: true
       }
     },
@@ -49,7 +49,7 @@
         url:
           "http://www.zjcoldcloud.com/bqs/backend/web/index.php/knight/delete",
         method: "post",
-        data: this.categoryid,
+        data: JSON.parse(this.categoryid),
         transformRequest: [
           function(data) {
             let ret = "";

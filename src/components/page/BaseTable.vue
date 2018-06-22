@@ -267,6 +267,12 @@ export default {
       
     };
   },
+   beforeCreate(){
+    let token = window.sessionStorage.getItem('token');
+    if(token == ''|| token == undefined){
+      this.$router.push('/');
+    }
+  },
   created() {
     this.getData();
   },
@@ -846,7 +852,7 @@ export default {
     },
     testPhone(val){
       // 验证  手机号
-      let myreg=/^[1][3,4,5,7,8][0-9]{9}$/;  
+      let myreg=/^[1][3,4,5,6,7,8][0-9]{9}$/;  
       if(val=='添加'){
         if (!myreg.test(this.form.phone)) {  
               this.$message('请输入正确的手机号');

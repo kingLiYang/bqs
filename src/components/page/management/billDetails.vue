@@ -1,29 +1,63 @@
 <template>
     <div>
 <el-collapse v-model="activeNames" @change="handleChange">
+    <el-collapse-item title="TMS订单信息" name="0">
+      <table v-model="TMSorder">
+          <tr>
+            <td>TMS订单号</td>
+            <td>{{TMSorder.tms_order_code}}</td>
+            <td>TMS运单号</td>
+            <td>{{TMSorder.tms_way_code}}</td>
+            <td>设备号</td>
+            <td>{{TMSorder.device_code}}</td>
+          </tr>
+          <tr>
+            <td>发货人</td>
+            <td>{{TMSorder.tms_get_goods_man}}</td>
+            <td>发货人电话</td>
+            <td>{{TMSorder.tms_get_goods_phone}}</td>
+            <td>发货时间</td>
+            <td>{{TMSorder.tms_get_goods_plan_time}}</td>
+          </tr>
+          <tr>
+            <td>收货人</td>
+            <td>{{TMSorder.tms_send_goods_man}}</td>
+            <td>收货人电话</td>
+            <td>{{TMSorder.tms_send_goods_phone}}</td>
+            <td>时限</td>
+            <td>{{TMSorder.plan_time}}</td>
+          </tr>
+          <tr>
+            <td>发货人地址</td>
+            <td>{{TMSorder.tms_get_goods_address}}</td>
+            <td>{{TMSorder.tms_get_goods_company}}</td>
+            <td>收货人地址</td>
+            <td>{{TMSorder.tms_send_goods_address}}</td>
+            <td>{{TMSorder.tms_send_goods_company}}</td>
+          </tr>
+      </table>
+  </el-collapse-item>
   <el-collapse-item title="订单信息" name="1">
       <table v-model="order">
           <tr>
-            <td>TMS订单号</td>
-            <td>{{order.tms_order_code}}</td>
-            <td>TMS运单号</td>
-            <td>{{order.tms_way_code}}</td>
             <td>订单号</td>
             <td>{{order.order_code}}</td>
-          </tr>
-          <tr>
             <td>订单状态</td>
             <td>{{order.status}}</td>
             <td>订单类型</td>
             <td>{{order.order_type}}</td>
-            <td>订单添加时间</td>
-            <td>{{order.add_time | formatDate}}</td>
           </tr>
           <tr>
+            
+            <td>订单添加时间</td>
+            <td>{{order.add_time | formatDate}}</td>
             <td>骑士姓名</td>
             <td>{{order.relly_name}}</td>
             <td>骑士电话</td>
             <td>{{order.phone}}</td>
+          </tr>
+          <tr>
+            
             <td>骑士所属站点</td>
             <td>{{order.knight_company}}</td>
           </tr>
@@ -51,7 +85,7 @@
           <div v-for='(item,index) in getbox.get_box_img' :key="index">
               <img :src="item" alt="" @click='isHover($event)'>
           </div>
-         <div v-if='sendbox.send_box_img.length == 0'>暂无照片</div>
+         <div v-if='Number(getbox.get_box_img.length) == 0' >暂无照片</div>
       </div>
   </el-collapse-item>
   <el-collapse-item title="取货信息" name="3" v-if='isShow2'>
@@ -76,7 +110,7 @@
           <div v-for='(item,index) in getgoods.get_goods_img' :key="index">
               <img :src="item" alt="" @click='isHover($event)'>
           </div>
-          <div v-if='sendbox.send_box_img.length == 0'>暂无照片</div>
+          <div v-if='Number(getgoods.get_goods_img.length) == 0'>暂无照片</div>
       </div>
   </el-collapse-item>
   <el-collapse-item title="送货信息" name="4" v-if='isShow3'>
@@ -101,7 +135,7 @@
           <div v-for='(item,index) in sendgoods.send_goods_img' :key="index">
               <img :src="item" alt="" @click='isHover($event)'>
           </div>
-          <div v-if='sendbox.send_box_img.length == 0'>暂无照片</div>
+          <div v-if='Number(sendgoods.send_goods_img.length) == 0'>暂无照片</div>
       </div>
   </el-collapse-item>
   <el-collapse-item title="返箱信息" name="5" v-if='isShow4'>
@@ -126,7 +160,7 @@
           <div v-for='(item,index) in sendbox.send_box_img' :key="index">
               <img :src="item" alt="" @click='isHover($event)'>
           </div>
-          <div v-if='sendbox.send_box_img.length == 0'>暂无照片</div>
+          <div v-if='Number(sendbox.send_box_img.length) == 0'>暂无照片</div>
       </div>
   </el-collapse-item>
 
@@ -175,7 +209,7 @@ import { formatDate } from "./../../../js/data";
 export default {
   data() {
     return {
-      activeNames: ["1"],
+      activeNames: ["1", "0"],
       tableData:[],
       isShow1: false,
       isShow2: false,
@@ -188,9 +222,23 @@ export default {
       isClass3:false,
       isClass4:false,
       isSrc:"",
+      TMSorder: {
+        tms_order_code:"",
+        tms_way_code:"",
+        device_code:"",
+        tms_get_goods_man:"",
+        tms_get_goods_phone:"",
+        tms_get_goods_plan_time:"",
+        tms_send_goods_man:"",
+        tms_send_goods_phone:"",
+        tms_get_goods_address:"",
+        tms_send_goods_address:"",
+        tms_send_goods_company:"",
+        tms_get_goods_company:"",
+        plan_time:""
+      },
       order:{
-          tms_order_code:"",
-          tms_way_code:"",
+          
           order_code:"",
           add_time:"",
           order_type:"",
@@ -234,6 +282,12 @@ export default {
 
     };
   },
+   beforeCreate(){
+    let token = window.sessionStorage.getItem('token');
+    if(token == ''|| token == undefined){
+      this.$router.push('/');
+    }
+  },
   created() {
     
     let data = JSON.parse(window.localStorage.getItem('data'));
@@ -275,8 +329,26 @@ export default {
 
     this.tableData = data.data.goods;
     // 订单信息
-    this.order.tms_order_code = data.data.tms_order_code;
-    this.order.tms_way_code = data.data.tms_way_code;
+    this.TMSorder.tms_order_code = data.data.tms_order_code;
+    this.TMSorder.tms_way_code = data.data.tms_way_code;
+    this.TMSorder.device_code = data.data.TMSorder;
+    this.TMSorder.tms_get_goods_man = data.data.tms_get_goods_man;
+
+    this.TMSorder.tms_get_goods_phone = data.data.tms_get_goods_phone;
+    this.TMSorder.tms_get_goods_plan_time = data.data.tms_get_goods_plan_time;
+
+    this.TMSorder.tms_send_goods_man = data.data.tms_send_goods_man;
+    this.TMSorder.tms_send_goods_phone = data.data.tms_send_goods_phone;
+
+    this.TMSorder.tms_get_goods_address = data.data.tms_get_goods_address;
+    this.TMSorder.tms_send_goods_address = data.data.tms_send_goods_address;
+
+    this.TMSorder.tms_get_goods_company = data.data.tms_get_goods_company;
+    this.TMSorder.tms_send_goods_company = data.data.tms_send_goods_company;
+    this.TMSorder.plan_time = data.data.plan_time;
+
+
+
     this.order.order_code = data.data.order_code;
     this.order.add_time = data.data.add_time;
     // 0 未接单 1 已接单 2 已取箱 3 已取货 4 已签收 5 已返箱 6 已拒单 7 已完成 
@@ -316,7 +388,7 @@ export default {
     this.getbox.get_box_address = data.data.get_box_address;
     this.getbox.get_box_plan_time = data.data.get_box_plan_time;
     this.getbox.get_box_now_time = data.data.get_box_now_time;
-    this.getbox.get_box_img = data.data.get_box_img;
+    this.getbox.get_box_img = data.data.get_box_img || [];
 
     // 取货信息
     this.getgoods.get_goods_man = data.data.get_goods_man;
@@ -324,7 +396,7 @@ export default {
     this.getgoods.get_goods_address = data.data.get_goods_address;
     this.getgoods.get_goods_plan_time = data.data.get_goods_plan_time;
     this.getgoods.get_goods_now_time = data.data.get_goods_now_time;
-    this.getgoods.get_goods_img = data.data.get_goods_img;
+    this.getgoods.get_goods_img = data.data.get_goods_img || [];
 
     // 送货信息
     this.sendgoods.send_goods_man = data.data.send_goods_man;
@@ -332,14 +404,14 @@ export default {
     this.sendgoods.send_goods_address = data.data.send_goods_address;
     this.sendgoods.send_goods_plan_time = data.data.send_goods_plan_time;
     this.sendgoods.send_goods_now_time = data.data.send_goods_now_time;
-    this.sendgoods.send_goods_img = data.data.send_goods_img;
+    this.sendgoods.send_goods_img = data.data.send_goods_img || [];
     // 返箱 信息
     this.sendbox.send_box_man = data.data.send_box_man;
     this.sendbox.send_box_phone = data.data.send_box_phone;
     this.sendbox.send_box_address = data.data.send_box_address;
     this.sendbox.send_box_plan_time = data.data.send_box_plan_time;
     this.sendbox.send_box_now_time = data.data.send_box_now_time;
-    this.sendbox.send_box_img = data.data.send_box_img;
+    this.sendbox.send_box_img = data.data.send_box_img || [];
   },
   methods: {
     handleChange(val) {
