@@ -13,6 +13,9 @@
             <el-form-item label="TMS订单号">
                 <el-input placeholder="请输入TMS订单号" v-model="orderMath"></el-input>
             </el-form-item>
+            <el-form-item label="运单号">
+                <el-input placeholder="请输入运单号" v-model="wayMath"></el-input>
+            </el-form-item>
             <el-form-item label="选择方式" >
                <el-select v-model="form1.region"  placeholder="请选择启用状态">
                   <el-option label="请选择" value=""></el-option>
@@ -39,15 +42,23 @@
               </el-table-column>
               <el-table-column
                 prop="order_code"
-                label="单号">
+                label="订单号">
               </el-table-column>
               <el-table-column
                 prop="tms_order_code"
-                label="订单号">
+                label="TMS订单号">
+              </el-table-column>
+              <el-table-column
+                prop="tms_way_code"
+                label="运单号">
               </el-table-column>
               <el-table-column
                 prop="relly_name"
                 label="骑士姓名">
+              </el-table-column>
+              <el-table-column
+                prop="phone"
+                label="骑士电话">
               </el-table-column>
               <!-- 0 未接单 1 已接单 2 已取箱 3 已取货 4 已签收 5 已返箱 6 已拒单 7 已完成 -->
               <el-table-column
@@ -66,17 +77,20 @@
                 label="金额(元)">
               </el-table-column>
               <el-table-column
-                label="生成时间">
+                label="生成时间" min-width="70">
                 <template slot-scope="scope">{{ scope.row.add_time | formatDate}}</template>
               </el-table-column>
               
               <el-table-column
-                label="操作" width="300">
+                label="操作" min-width="250">
                 <template slot-scope="scope" >
-                  <el-button type="primary" size="small" round @click.native.prevent="editChild(scope.row)" v-if="scope.row.status == '0' || scope.row.status == '6'">修改信息</el-button>
+                  <div style='display:flex;flex-wrap: wrap;'>
+                    <el-button type="primary" size="small" round @click.native.prevent="editChild(scope.row)" v-if="scope.row.status == '0' || scope.row.status == '6'">修改信息</el-button>
                   <el-button type="warning" size="small" round @click.native.prevent="seeChild(scope.row)" v-if="scope.row.status == '0' || scope.row.status == '6'">指派骑士</el-button>
                   <el-button type="primary" size="small" round @click.native.prevent="details(scope.row)">详情</el-button>
                   <el-button type="danger" size="small" round @click.native.prevent="delChild(scope.row)" v-if="scope.row.status == '0' || scope.row.status == '6'">删除</el-button>
+                  </div>
+                  
                 </template>
               </el-table-column>
             </el-table>
@@ -174,6 +188,7 @@ export default {
     return {
       orderMath:"",
       orderNum:"",
+      wayMath:"",
       tableData: [],
       arr: [],
       checkedAll: false,
@@ -251,7 +266,6 @@ export default {
           case '7':
           return '已完成';
           break;
-
         }
     },
     judge1(data){
@@ -269,7 +283,6 @@ export default {
           case '4':
           return '转运';
           break;
-
         }
     },
     handleCurrentChange(val) {
@@ -290,6 +303,7 @@ export default {
            tms_order_code: this.orderMath,
            order_code: this.orderNum,
            type: this.form1.region,
+           tms_way_code: this.wayMath,
           token: window.sessionStorage.getItem("token")
         },
         transformRequest: [
@@ -308,12 +322,19 @@ export default {
         headers: { "Content-Type": "application/x-www-form-urlencoded" }
       }).then(function(res) {
         if(res.data.code == '0'){
-          that.tableData = res.data.data.data;
+          let tableData1 = res.data.data.data;
+          tableData1.forEach((item,index)=>{
+            if(item.tms_way_code == 'null'){
+              item.tms_way_code = '';
+            }
+          })
+          that.tableData = tableData1;
           that.ccc = Number(res.data.data.count) || 0;
         }else if(res.data.code == '450'){
           that.$message("暂无权限");
         }else if(res.data.code == '1'){
           that.tableData = [];
+          that.ccc = 0;
         }else if(res.data.code == '400'){
           that.$message("请先登录");
           that.$router.push('/');
@@ -378,7 +399,6 @@ export default {
     editChild(rows){
       // 修改信息   条页面
        this.$router.push({path:"/billType",query:{id:rows.order_id,type:rows.order_type,sta:true}});
-
     },
     huoquSheng(){
       // 获取省
@@ -519,7 +539,6 @@ this.form4.region2 = '';
           that.dialogNight = false;
           that.$message('指派成功');
           that.getData();
-
           // that.options = res.data.data;
         }else if(res.data.code == '450'){
           that.$message("暂无权限");
@@ -631,7 +650,6 @@ th {
   padding: 10px 0px;
   text-align: center;
 }
-
 table {
   border: solid #ccc;
   border-width: 1px 0px 0px 1px;

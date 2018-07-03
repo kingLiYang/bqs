@@ -770,6 +770,11 @@ export default {
     },
     allotOrder() {
       // 分配角色  提交
+      if(this.userVal.length == 0 ){
+        this.$message('请选择角色');
+      }else if(this.userVal.length > 1){
+        this.$message('请选择单个角色');
+      }else{
       let that = this;
       this.$axios({
         url: "http://www.zjcoldcloud.com/bqs/backend/web/index.php/user/role",
@@ -797,10 +802,15 @@ export default {
         if (res.data.code == 0) {
           // that.allRole = res.data.data.role;
           that.allotDialogVisible = false;
+           that.$message(res.data.message);
         }else if(res.data.code == '450'){
           that.$message("暂无权限");
+        }else{
+          that.$message(res.data.message);
         }
       });
+      }
+      
     },
     searchUser() {
       // 查询

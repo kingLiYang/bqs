@@ -147,32 +147,48 @@
           :visible.sync="dialogFormVisible"
           width="10%">
           <div>
-            <p v-if='isOrder'>
-              <span>订单号：</span>
-              <span>{{tms_order_code || '暂无单号'}}</span>
-              <span>运单号：</span>
-              <span>{{way_code || '暂无单号'}}</span>
-            </p>
-            <div>
-              <div>内容：</div>
-              <div>{{wenContent}}</div>
-            </div> 
-            <div>
+            <el-row v-if='isOrder'>
+              <el-col :span="12">
+                <div class="grid-content bg-purple">
+                  <span>订单号：</span>
+                  <span>{{tms_order_code || '暂无单号'}}</span>
+                </div>
+              </el-col>
+              <el-col :span="12">
+                <div class="grid-content bg-purple-light">
+                  <span>运单号：</span>
+                  <span>{{way_code || '暂无单号'}}</span>
+                </div>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="24">
+                <div class="grid-content bg-purple-dark">
+                  <span>内容：</span>
+                  <span>{{wenContent}}</span>
+                </div>
+              </el-col>
+            </el-row>
+            <div class='isflex'>
               <div>图片：</div>
-              <div>
-                <img :src="item" alt="" v-for='(item,index) in imgList' :key='index'>
+              <div style='width:500px;height:300px;margin: 0 0 20px 0;'>
+                <template v-if='imgList.length==1'>
+                  <img :src="item" alt="" v-for='(item,index) in imgList' :key='index' alt='暂无照片' style='width:100%;height:100%;'>
+                </template>
+               <template v-else>
+                <span>暂无照片</span>
+               </template>
               </div>
             </div>
-            <div>
-              <div>回复：</div>
-              <div>
-                <textarea name="" id="" cols="30" rows="10" :disabled='isDisabled' v-model="replyCon">{{wenReply}}</textarea>
-              </div>
+            <div class='isflex'>
+              <div style='width:5%;'>回复：</div>
+              <textarea name="" id="" cols="30" rows="10" :disabled='isDisabled' class='isla' v-model="replyCon"></textarea>
             </div>
           </div>
           <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogFormVisible = false" v-if='!isDisabled'>取 消</el-button>
-                <el-button type="primary" @click="delOrder()">{{wenzi}}</el-button>
+                <el-button type="primary" v-if='isDisabled1' @click="dialogFormVisible = false">关闭</el-button>
+                <el-button type="primary" @click="delOrder()" v-if='!isDisabled'>提交</el-button>
             </span>
          
         </el-dialog>
@@ -198,12 +214,12 @@ export default {
       currentPage: 1,
       dialogFormVisible: false,
       isDisabled: false,
+      isDisabled1: false,
       tms_order_code: '',
       way_code: '',
       wenContent: '',
       imgList : [],
-      wenReply : '',
-      wenzi: ''
+      wenReply : ''
 
     };
   },
@@ -319,19 +335,20 @@ export default {
         headers: { "Content-Type": "application/x-www-form-urlencoded" }
       }).then((res)=>{
         if (res.data.code == "0") {
-          that.dialogFormVisible = true;
           if(res.data.data.reply == ''){
             that.isDisabled = false;
-            that.wenzi = '提交';
+            that.isDisabled1 = false;
           }else{
             that.isDisabled = true;
-            that.wenzi = '关闭';
+            that.isDisabled1 = true;
           }
            that.tms_order_code = res.data.data.order_code;
            that.way_code = res.data.data.tms_way_code;
            that.wenContent = res.data.data.bug;
            that.imgList = res.data.data.picture;
-           that.wenReply = res.data.data.reply;
+           that.replyCon = res.data.data.reply;
+          that.dialogFormVisible = true;
+
         } else if (res.data.code == "450") {
           that.$message("暂无权限");
         } else if (res.data.code == "400") {
@@ -398,5 +415,13 @@ export default {
 }
 .sdf{
   cursor: pointer;
+}
+.isla{
+  width:90%;
+  resize:none;
+}
+.isflex{
+  display: flex;
+
 }
 </style>

@@ -1,5 +1,6 @@
 <template>
    <el-form :rules="rules2" label-position="left" label-width="0px" class="demo-ruleForm card-box loginform">
+
     <h3 class="title">冰骑士后台</h3>
     <el-form-item>
       <el-input type="text" auto-complete="off" placeholder="账号" v-model="account"></el-input>
@@ -18,6 +19,7 @@ export default {
   data() {
     return {
       logining: false,
+      show: true,
       account: "",
       checkPass: "",
       rules2: {
@@ -90,5 +92,7 @@ export default {
 .loginform {
   width: 350px;
   padding: 35px 35px 15px 35px;
+
 }
+
 </style>

@@ -3,11 +3,11 @@
         <div>
             <el-form  :inline="true">
                 <el-row>
-                    <el-form-item label="tms订单号">
-                        <el-input v-model="tmsNum" auto-complete="off" @blur="getTmsMsg()" :disabled="isTms"></el-input>
+                    <el-form-item label="tms订单号" v-if='isTmsNum'>
+                        <el-input v-model="tmsNum" auto-complete="off" @blur="getTmsMsg()"></el-input>
                     </el-form-item>
-                    <el-form-item label="运单号">
-                        <el-input v-model="billNum" auto-complete="off"  @blur="getMsg()" :disabled="isWay"></el-input>
+                    <el-form-item label="运单号" v-if='isWayNum'>
+                        <el-input v-model="billNum" auto-complete="off"  @blur="getMsg()"></el-input>
                     </el-form-item>
                     <el-form-item label="冰骑士订单号" v-if="isA">
                       <el-input v-model="iceNum" auto-complete="off" :disabled="true"></el-input>
@@ -193,6 +193,8 @@ import { formatDate } from "./../../../js/data";
 export default {
   data: function() {
     return {
+      isWayNum: true,
+      isTmsNum: true,
       isDisabled: false,
       isTms: false,
       isWay: false,
@@ -308,17 +310,25 @@ export default {
       // this.add();
     }
     if (this.type == "1") {
+      this.isWayNum = false;
+      this.isTmsNum = true;
       this.isFan = true;
       this.isQu = true;
     } else if (this.type == "2") {
+      this.isWayNum = false;
+      this.isTmsNum = true;
       this.isFan = false;
       this.isQu = true;
       this.fanName = "送货信息：";
     } else if (this.type == "3") {
+      this.isWayNum = true;
+      this.isTmsNum = false;
       this.isQu = false;
       this.isFan = true;
       this.quxiang = "取货信息：";
     } else {
+      this.isWayNum = true;
+      this.isTmsNum = false;
       this.isQu = false;
       this.isFan = false;
       this.fanName = "送货信息：";
@@ -350,9 +360,10 @@ export default {
         headers: { "Content-Type": "application/x-www-form-urlencoded" }
       }).then(function(res) {
         if (Number(res.data.code) == 0) {
+          that.huoquSheng();
           if (Number(res.data.data.station.length) == 0) {
             that.isDisabled = false;
-            that.huoquSheng();
+            
           } else {
             that.isDisabled = true;
             switch (Number(that.type)) {
@@ -437,6 +448,8 @@ export default {
         headers: { "Content-Type": "application/x-www-form-urlencoded" }
       }).then(function(res) {
         if (res.data.code == "0") {
+                that.isTms = false;
+      that.isWay = false;
           switch (Number(that.type)) {
             case 1:
               that.form1.address = res.data.data.tms_get_goods_address; //取货地址
@@ -513,6 +526,8 @@ export default {
         headers: { "Content-Type": "application/x-www-form-urlencoded" }
       }).then(function(res) {
         if (res.data.code == "0") {
+                that.isTms = false;
+                that.isWay = false;
           switch (Number(that.type)) {
             case 1:
               that.form1.address = res.data.data.tms_get_goods_address; //取货地址
@@ -527,7 +542,7 @@ export default {
               that.value3 = that.formatDate(res.data.data.send_goods_plan_time); //送货规定时间
               that.value1 = that.formatDate(res.data.data.get_box_plan_time); //取箱规定时间
               that.value4 = that.formatDate(res.data.data.send_box_plan_time); //返箱规定时间
-              that.billNum = res.data.data.tms_way_code;
+              that.billNum = res.data.data.tms_way_code || '';
 
               break;
             case 2:
@@ -538,17 +553,17 @@ export default {
                 res.data.data.tms_get_goods_plan_time
               ); //取货规定时间
               that.value1 = that.formatDate(res.data.data.get_box_plan_time); //取箱规定时间
-              that.billNum = res.data.data.tms_way_code;
+              that.billNum = res.data.data.tms_way_code || '';
               break;
             case 3:
               that.form2.address = res.data.data.tms_send_goods_address; //送货地址
               that.form2.name = res.data.data.tms_send_goods_man; //送货姓名
               that.form2.phone = res.data.data.tms_send_goods_phone; //送货电话
               that.value3 = that.formatDate(res.data.data.send_goods_plan_time); //送货规定时间
-              that.billNum = res.data.data.tms_way_code;
+              that.billNum = res.data.data.tms_way_code || '';
               break;
             case 4:
-            that.billNum = res.data.data.tms_way_code;
+            that.billNum = res.data.data.tms_way_code || '';
               break;
           }
         } else if (res.data.code == "450") {
@@ -1020,7 +1035,10 @@ export default {
       }).then(function(res) {
         if (res.data.code == "0") {
           that.tmsNum = res.data.data.tms_order_code; // tms订单号
-          that.billNum = res.data.data.tms_way_code; // tms运单号
+          if(res.data.data.tms_way_code == 'null'){
+            that.billNum =''; // tms运单号
+          }
+          
           that.iceNum = res.data.data.order_code;
         } else if (res.data.code == "450") {
           that.$message("暂无权限");

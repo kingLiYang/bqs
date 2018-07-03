@@ -331,7 +331,7 @@ export default {
     // 订单信息
     this.TMSorder.tms_order_code = data.data.tms_order_code;
     this.TMSorder.tms_way_code = data.data.tms_way_code;
-    this.TMSorder.device_code = data.data.TMSorder;
+    this.TMSorder.device_code = data.data.device_code;
     this.TMSorder.tms_get_goods_man = data.data.tms_get_goods_man;
 
     this.TMSorder.tms_get_goods_phone = data.data.tms_get_goods_phone;
