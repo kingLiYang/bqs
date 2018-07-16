@@ -3,11 +3,11 @@
         <div class="divBut">
 
             <el-row>
-                <el-button type="primary" round @click="add()">添加账号</el-button>
-                <el-button type="primary" round @click='edit()'>修改账号</el-button>
+                <!-- <el-button type="primary" round @click="add()">添加账号</el-button> -->
+                <!-- <el-button type="primary" round @click='edit()'>修改账号</el-button> -->
                 <!-- <el-button type="primary" round @click="is_yes()">启用</el-button> -->
-                <el-button type="primary" circle @click="del()">删除</el-button>
-                <el-button type="primary" round @click="is_no()">导出</el-button>
+                <!-- <el-button type="primary" circle @click="del()">删除</el-button> -->
+                <!-- <el-button type="primary" round @click="is_no()">导出</el-button> -->
             </el-row>
         </div>
         <div class="divBut" style="margin:20px 0 0 0;display:flex;justify-content: space-between;">
@@ -15,7 +15,7 @@
             <el-form-item label="姓名">
                 <el-input placeholder="请输入姓名" v-model="userNam"></el-input>
             </el-form-item>
-            <el-form-item label="公司">
+            <el-form-item label="转运中心">
               <el-select v-model="form1.region" filterable  placeholder="请选择">
                 <el-option :label="item.name" :value="item.pid_path" v-for="(item,index) in optionsZhan" :key="index"></el-option>
               </el-select>
@@ -38,19 +38,23 @@
               style="width: 100%"
               cell-class-name='sheyan'
               @selection-change="handleSelectionChange">
-              <el-table-column
+              <!-- <el-table-column
                 type="selection"
                 width="55">
-              </el-table-column>
+              </el-table-column> -->
               <el-table-column
                 type="index"
                 label="序号"
                 width="100">
               </el-table-column>
               <el-table-column
+                prop="phone"
+                label="手机号">
+              </el-table-column>
+              <!-- <el-table-column
                 prop="username"
                 label="账号">
-              </el-table-column>
+              </el-table-column> -->
               <el-table-column
                 prop="relly_name"
                 label="姓名">
@@ -58,10 +62,6 @@
               <el-table-column
                 prop="company"
                 label="所属转运中心">
-              </el-table-column>
-              <el-table-column
-                prop="phone"
-                label="联系方式">
               </el-table-column>
               <el-table-column
                 label="工作状态">
@@ -78,8 +78,8 @@
               <el-table-column
                 label="操作">
                 <template slot-scope="scope" >
-                  <el-button type="success" size="small" round @click.native.prevent="delChild(scope.row)" v-if="scope.row.card ==null">添加信息</el-button>
-                  <el-button type="primary" size="small" round @click.native.prevent="editChild(scope.row)" v-if="scope.row.card !=null">修改信息</el-button>
+                  <!-- <el-button type="success" size="small" round @click.native.prevent="delChild(scope.row)" v-if="scope.row.card ==null">添加信息</el-button> -->
+                  <!-- <el-button type="primary" size="small" round @click.native.prevent="editChild(scope.row)" v-if="scope.row.card !=null">修改信息</el-button> -->
                   <el-button type="primary" size="small" round @click.native.prevent="seeChild(scope.row)" v-if="scope.row.card !=null">查看信息</el-button>
                 </template>
               </el-table-column>

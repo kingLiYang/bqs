@@ -4,34 +4,34 @@
     <el-collapse-item title="TMS订单信息" name="0">
       <table v-model="TMSorder">
           <tr>
-            <td>TMS订单号</td>
+            <td class='table_td'>TMS订单号</td>
             <td>{{TMSorder.tms_order_code}}</td>
-            <td>TMS运单号</td>
+            <td class='table_td'>TMS运单号</td>
             <td>{{TMSorder.tms_way_code}}</td>
-            <td>设备号</td>
+            <td class='table_td'>设备号</td>
             <td>{{TMSorder.device_code}}</td>
           </tr>
           <tr>
-            <td>发货人</td>
+            <td class='table_td'>发货人</td>
             <td>{{TMSorder.tms_get_goods_man}}</td>
-            <td>发货人电话</td>
+            <td class='table_td'>发货人电话</td>
             <td>{{TMSorder.tms_get_goods_phone}}</td>
-            <td>发货时间</td>
+            <td class='table_td'>发货时间</td>
             <td>{{TMSorder.tms_get_goods_plan_time}}</td>
           </tr>
           <tr>
-            <td>收货人</td>
+            <td class='table_td'>收货人</td>
             <td>{{TMSorder.tms_send_goods_man}}</td>
-            <td>收货人电话</td>
+            <td class='table_td'>收货人电话</td>
             <td>{{TMSorder.tms_send_goods_phone}}</td>
-            <td>时限</td>
+            <td class='table_td'>时限</td>
             <td>{{TMSorder.plan_time}}</td>
           </tr>
           <tr>
-            <td>发货人地址</td>
+            <td class='table_td'>发货人地址</td>
             <td>{{TMSorder.tms_get_goods_address}}</td>
             <td>{{TMSorder.tms_get_goods_company}}</td>
-            <td>收货人地址</td>
+            <td class='table_td'>收货人地址</td>
             <td>{{TMSorder.tms_send_goods_address}}</td>
             <td>{{TMSorder.tms_send_goods_company}}</td>
           </tr>
@@ -40,43 +40,45 @@
   <el-collapse-item title="订单信息" name="1">
       <table v-model="order">
           <tr>
-            <td>订单号</td>
+            <td class='table_td'>订单号</td>
             <td>{{order.order_code}}</td>
-            <td>订单状态</td>
+            <td class='table_td'>订单状态</td>
             <td>{{order.status}}</td>
-            <td>订单类型</td>
+            <td class='table_td'>订单类型</td>
             <td>{{order.order_type}}</td>
           </tr>
           <tr>
             
-            <td>订单添加时间</td>
+            <td class='table_td'>订单添加时间</td>
             <td>{{order.add_time | formatDate}}</td>
-            <td>骑士姓名</td>
+            <td class='table_td'>骑士姓名</td>
             <td>{{order.relly_name}}</td>
-            <td>骑士电话</td>
+            <td class='table_td'>骑士电话</td>
             <td>{{order.phone}}</td>
           </tr>
           <tr>
             
-            <td>骑士所属站点</td>
+            <td class='table_td'>骑士所属站点</td>
             <td>{{order.knight_company}}</td>
+            <td class='table_td'>导出类型</td>
+            <td>{{order.export_type}}</td>
           </tr>
       </table>
   </el-collapse-item>
   <el-collapse-item title="取箱信息" name="2" v-if='isShow1'>
     <table v-model='getbox'>
           <tr>
-            <td>姓名</td>
+            <td class='table_td'>姓名</td>
             <td>{{getbox.get_box_man}}</td>
-            <td>电话</td>
+            <td class='table_td'>电话</td>
             <td>{{getbox.get_box_phone}}</td>
-            <td>地址</td>
+            <td class='table_td'>地址</td>
             <td>{{getbox.get_box_address}}</td>
           </tr>
           <tr>
-            <td>规定时间</td>
+            <td class='table_td'>规定时间</td>
             <td>{{getbox.get_box_plan_time | formatDate}}</td>
-            <td>到达时间</td>
+            <td class='table_td'>到达时间</td>
             <td>{{getbox.get_box_now_time | formatDate}}</td>
           </tr>
       </table>
@@ -91,17 +93,17 @@
   <el-collapse-item title="取货信息" name="3" v-if='isShow2'>
     <table v-model='getgoods'>
           <tr>
-            <td>姓名</td>
+            <td class='table_td'>姓名</td>
             <td>{{getgoods.get_goods_man}}</td>
-            <td>电话</td>
+            <td class='table_td'>电话</td>
             <td>{{getgoods.get_goods_phone}}</td>
-            <td>地址</td>
+            <td class='table_td'>地址</td>
             <td>{{getgoods.get_goods_address}}</td>
           </tr>
           <tr>
-            <td>规定时间</td>
+            <td class='table_td'>规定时间</td>
             <td>{{getgoods.get_goods_plan_time | formatDate}}</td>
-            <td>到达时间</td>
+            <td class='table_td'>到达时间</td>
             <td>{{getgoods.get_goods_now_time | formatDate}}</td>
           </tr>
       </table>
@@ -116,17 +118,17 @@
   <el-collapse-item title="送货信息" name="4" v-if='isShow3'>
     <table v-model='sendgoods'>
           <tr>
-            <td>姓名</td>
+            <td class='table_td'>姓名</td>
             <td>{{sendgoods.send_goods_man}}</td>
-            <td>电话</td>
+            <td class='table_td'>电话</td>
             <td>{{sendgoods.send_goods_phone}}</td>
-            <td>地址</td>
+            <td class='table_td'>地址</td>
             <td>{{sendgoods.send_goods_address}}</td>
           </tr>
           <tr>
-            <td>规定时间</td>
+            <td class='table_td'>规定时间</td>
             <td>{{sendgoods.send_goods_plan_time | formatDate}}</td>
-            <td>到达时间</td>
+            <td class='table_td'>到达时间</td>
             <td>{{sendgoods.send_goods_now_time | formatDate}}</td>
           </tr>
       </table>
@@ -141,17 +143,17 @@
   <el-collapse-item title="返箱信息" name="5" v-if='isShow4'>
     <table v-model = 'sendbox'>
           <tr>
-            <td>姓名</td>
+            <td class='table_td'>姓名</td>
             <td>{{sendbox.send_box_man}}</td>
-            <td>电话</td>
+            <td class='table_td'>电话</td>
             <td>{{sendbox.send_box_phone}}</td>
-            <td>地址</td>
+            <td class='table_td'>地址</td>
             <td>{{sendbox.send_box_address}}</td>
           </tr>
           <tr>
-            <td>规定时间</td>
+            <td class='table_td'>规定时间</td>
             <td>{{sendbox.send_box_plan_time | formatDate}}</td>
-            <td>到达时间</td>
+            <td class='table_td'>到达时间</td>
             <td>{{sendbox.send_box_now_time | formatDate}}</td>
           </tr>
       </table>
@@ -245,7 +247,8 @@ export default {
           status:"",
           relly_name:"",
           phone:"",
-          knight_company:""
+          knight_company:"",
+          export_type:""
       },
       getbox:{
           get_box_man:"",
@@ -347,7 +350,17 @@ export default {
     this.TMSorder.tms_send_goods_company = data.data.tms_send_goods_company;
     this.TMSorder.plan_time = data.data.plan_time;
 
-
+    switch (data.data.export_type){
+      case '1':
+      this.order.export_type = '现场导出';
+      break;
+      case '2':
+      this.order.export_type = '不需要导出';
+      break;
+      case '3':
+      this.order.export_type = '客服导出';
+      break;
+    }
 
     this.order.order_code = data.data.order_code;
     this.order.add_time = data.data.add_time;
@@ -450,7 +463,6 @@ export default {
         this.isClass4 = false;
         this.isClass1 = true;
       }
-
     }
 
   },
@@ -482,6 +494,9 @@ table {
   border-collapse: collapse;
   width: 100%;
 }
+.table_td {
+  background-color: #eff4f6;
+  }  
 .isPhoto{
     margin: 10px 0 0 0;
     display: flex;
