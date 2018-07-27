@@ -448,8 +448,8 @@ export default {
         headers: { "Content-Type": "application/x-www-form-urlencoded" }
       }).then(function(res) {
         if (res.data.code == "0") {
-                that.isTms = false;
-      that.isWay = false;
+            that.isTms = false;
+            that.isWay = false;
           switch (Number(that.type)) {
             case 1:
               that.form1.address = res.data.data.tms_get_goods_address; //取货地址
@@ -916,8 +916,10 @@ export default {
         obj.get_user_id = this.form.region3; // 取货站点人员
         obj.send_company_id = this.form3.region2; // 返箱站点
         obj.send_user_id = this.form3.region3; // 返箱站点人员
+
         obj.tms_order_code = this.tmsNum; // tms订单号
         obj.tms_way_code = this.billNum; // tms运单号
+        
         obj.get_goods_plan_time = this.value1; //取货规定时间
         obj.send_box_plan_time = this.value4; //返箱规定时间
         obj.send_goods_address = this.form2.address; //送货地址

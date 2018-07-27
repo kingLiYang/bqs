@@ -19,13 +19,33 @@
                 <el-option :label="item.name" :value="item.pid_path" v-for="(item,index) in optionsZhan" :key="index"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="当前状态" >
+            <el-form-item label="当前状态">
                <el-select v-model="form1.region1"  placeholder="请选择">
                   <el-option label="请选择" value=""></el-option>
                   <el-option label="未审核" value="0"></el-option>
                   <el-option label="已打款" value="2"></el-option>
                   <el-option label="已审核或未打款" value="1"></el-option>
                 </el-select>
+            </el-form-item>
+            <el-form-item label="开始时间">
+                <el-date-picker
+                    v-model="value4"
+                    type="datetime"
+                    placeholder="选择日期时间"
+                    @change="changeTime4"
+                    align="right"
+                    :picker-options="pickerOptions1">
+                    </el-date-picker>
+            </el-form-item>
+            <el-form-item label="结束时间">
+                <el-date-picker
+                    v-model="value3"
+                    type="datetime"
+                    placeholder="选择日期时间"
+                    @change="changeTime3"
+                    align="right"
+                    :picker-options="pickerOptions1">
+                </el-date-picker>
             </el-form-item>
             <el-form-item>
                 <el-button type="primary" @click="searchUser()">查询</el-button>
@@ -43,8 +63,7 @@
               </el-table-column>
               <el-table-column
                 type="index"
-                label="序号"
-                width="60">
+                label="序号">
               </el-table-column>
               <!-- <el-table-column
                 prop="username"
@@ -55,6 +74,10 @@
                 label="冰骑士名称">
               </el-table-column>
               <el-table-column
+                prop="bank_coke"
+                label="银行卡号">
+              </el-table-column>
+              <el-table-column
                 prop="phone"
                 label="联系电话">
               </el-table-column>
@@ -62,27 +85,27 @@
                 prop="region"
                 label="所属大区">
               </el-table-column> -->
-              <el-table-column
+              <!-- <el-table-column
                 prop="company"
                 label="所属公司">
-              </el-table-column>
+              </el-table-column> -->
               <el-table-column
                 prop="station"
                 label="所属转运中心">
               </el-table-column>
-              <el-table-column
+              <!-- <el-table-column
                 prop="total_money"
                 label="账户余额">
-              </el-table-column>
+              </el-table-column> -->
               <el-table-column
                 prop="withdraw_money"
                 label="提现金额">
               </el-table-column>
 
-              <!-- <el-table-column
+              <el-table-column
                 label="提现时间">
-                <template slot-scope="scope">{{ scope.row.check_time | formatDate}}</template>
-              </el-table-column> -->
+                <template slot-scope="scope">{{ scope.row.addtime | formatDate}}</template>
+              </el-table-column>
               <el-table-column
                 prop="status"
                 label="审核状态"
@@ -116,6 +139,34 @@ import { formatDate } from "./../../js/data";
 export default {
   data() {
     return {
+            pickerOptions1: {
+        shortcuts: [
+          {
+            text: "今天",
+            onClick(picker) {
+              picker.$emit("pick", new Date());
+            }
+          },
+          {
+            text: "昨天",
+            onClick(picker) {
+              const date = new Date();
+              date.setTime(date.getTime() - 3600 * 1000 * 24);
+              picker.$emit("pick", date);
+            }
+          },
+          {
+            text: "一周前",
+            onClick(picker) {
+              const date = new Date();
+              date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit("pick", date);
+            }
+          }
+        ]
+      },
+            value3: "",
+      value4: "",
         iceNum: "",
         iceName:"",
       tableData: [],
@@ -172,6 +223,12 @@ export default {
   },
   computed: {},
   methods: {
+    changeTime3(val) {
+      this.value3 = val;
+    },
+    changeTime4(val) {
+      this.value4 = val;
+    },
       judge(data){
         switch (data.status){
           case '0':
@@ -273,6 +330,8 @@ export default {
           company_path: this.form1.region,
           relly_name: this.iceName,
           status:this.form1.region1,
+          start_time:this.value4,
+          end_time: this.value3,
           token: window.sessionStorage.getItem("token")
         },
         transformRequest: [
@@ -332,6 +391,8 @@ export default {
       val.forEach((item,index)=>{
         this.arr.push(item.w_id);
       })
+
+
     }
   },
   filters: {

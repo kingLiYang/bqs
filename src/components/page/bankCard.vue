@@ -85,11 +85,10 @@
 <script>
 import { formatDate } from "./../../js/data";
 export default {
-
   data() {
     return {
       tableData: [],
-      userNum:"",
+      userNum: "",
       arr: [],
       userNam: "",
       formLabelWidth: "120px",
@@ -98,10 +97,10 @@ export default {
       currentPage: 1
     };
   },
-   beforeCreate(){
-    let token = window.sessionStorage.getItem('token');
-    if(token == ''|| token == undefined){
-      this.$router.push('/');
+  beforeCreate() {
+    let token = window.sessionStorage.getItem("token");
+    if (token == "" || token == undefined) {
+      this.$router.push("/");
     }
   },
   created() {
@@ -109,7 +108,6 @@ export default {
   },
   computed: {},
   methods: {
-
     handleCurrentChange(val) {
       this.arr = [];
       this.currentPage = val;
@@ -124,8 +122,8 @@ export default {
         method: "post",
         data: {
           page: this.currentPage,
-          username: this.userNam,// 账户名
-          phone: this.userNum,// 电话号码
+          username: this.userNam, // 账户名
+          phone: this.userNum, // 电话号码
           token: window.sessionStorage.getItem("token")
         },
         transformRequest: [
@@ -167,7 +165,7 @@ export default {
           "银行名称",
           "银行卡号",
           "归属地",
-          "开户支行",
+          "开户支行"
         ];
         const filterVal = [
           "username",
@@ -222,19 +220,18 @@ table {
   border-width: 1px 0px 0px 1px;
   border-collapse: collapse;
 }
-.work{
-  width:15px;
-  height:15px;
+.work {
+  width: 15px;
+  height: 15px;
   background: green;
   border-radius: 50%;
   display: inline-block;
 }
-.fire{
-  width:15px;
-  height:15px;
+.fire {
+  width: 15px;
+  height: 15px;
   background: yellow;
   border-radius: 50%;
   display: inline-block;
 }
-
 </style>
