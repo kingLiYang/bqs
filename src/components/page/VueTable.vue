@@ -153,12 +153,6 @@ export default {
     };
   },
   components: {},
-  beforeCreate(){
-    let token = window.sessionStorage.getItem('token');
-    if(token == ''|| token == undefined){
-      this.$router.push('/');
-    }
-  },
   created() {
     this.show(); // 刚进来的时候  请求数据
   },

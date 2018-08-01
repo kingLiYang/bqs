@@ -18,6 +18,21 @@ if (process.env.NODE_ENV !== 'development') {
     Vue.prototype.URL_API = 'api/';
 }
 
+// 全局路由守护 路由跳转时  判断是否登录 
+router.beforeEach((to, from, next) => {
+    // 已登录,直接进入目标页面
+    let token = window.sessionStorage.getItem('token');
+    if(token == ''|| token == undefined){
+        if(to.path=='/login'){//如果是登录页面路径，就直接next()
+            next();
+          }else{//不然就跳转到登录；
+            next('/');
+          }
+
+    }else{
+        next();
+    }
+  })
 new Vue({
     router,
     render: h => h(App)

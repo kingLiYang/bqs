@@ -149,12 +149,6 @@ export default {
 
     };
   },
-   beforeCreate(){
-    let token = window.sessionStorage.getItem('token');
-    if(token == ''|| token == undefined){
-      this.$router.push('/');
-    }
-  },
   created() {
       this.getData();// 刚进来  获取数据
       if(this.$route.query.sta){

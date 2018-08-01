@@ -279,12 +279,6 @@ export default {
       iceNum: ""
     };
   },
-  beforeCreate() {
-    let token = window.sessionStorage.getItem("token");
-    if (token == "" || token == undefined) {
-      this.$router.push("/");
-    }
-  },
   created() {
     // 判断 是否是总部
 

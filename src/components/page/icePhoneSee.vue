@@ -80,12 +80,6 @@ export default {
             }
         }
     },
-    beforeCreate(){
-        let token = window.sessionStorage.getItem('token');
-        if(token == ''|| token == undefined){
-        this.$router.push('/');
-        }
-  },
   created(){
       this.id = this.$route.query.id;
       this.getData();

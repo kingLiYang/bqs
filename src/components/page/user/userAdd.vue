@@ -168,12 +168,6 @@ export default {
       inputSta:false
     };
   },
-   beforeCreate(){
-    let token = window.sessionStorage.getItem('token');
-    if(token == ''|| token == undefined){
-      this.$router.push('/');
-    }
-  },
   created() {
     // 获取 ID
     this.id = this.$route.query.id;

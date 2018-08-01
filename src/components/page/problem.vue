@@ -223,12 +223,6 @@ export default {
 
     };
   },
-  beforeCreate() {
-    let token = window.sessionStorage.getItem("token");
-    if (token == "" || token == undefined) {
-      this.$router.push("/");
-    }
-  },
   created() {
     this.relly_url = 'order_list';
     this.getList();

@@ -125,12 +125,6 @@ export default {
       
     };
   },
-   beforeCreate(){
-    let token = window.sessionStorage.getItem('token');
-    if(token == ''|| token == undefined){
-      this.$router.push('/');
-    }
-  },
   created() {
     this.getData();// 获取列表
     this.getZhandian();// 获取站点

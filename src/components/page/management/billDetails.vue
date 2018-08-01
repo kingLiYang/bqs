@@ -285,12 +285,7 @@ export default {
 
     };
   },
-   beforeCreate(){
-    let token = window.sessionStorage.getItem('token');
-    if(token == ''|| token == undefined){
-      this.$router.push('/');
-    }
-  },
+
   created() {
     
     let data = JSON.parse(window.localStorage.getItem('data'));

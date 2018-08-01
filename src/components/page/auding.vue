@@ -4,6 +4,7 @@
             <el-row>
                 <el-button type="primary" round @click="isAdd(sta=1)">审核</el-button>
                 <el-button type="primary" round @click="isAdd(sta=2)">打款</el-button>
+                <el-button type="primary" round @click="is_no()">导出</el-button>
             </el-row>
         </div>
         <div class="divBut" style="margin:20px 0 0 0;">
@@ -103,21 +104,22 @@
               </el-table-column>
 
               <el-table-column
+              prop="addtime"
                 label="提现时间">
-                <template slot-scope="scope">{{ scope.row.addtime | formatDate}}</template>
+                <!-- <template slot-scope="scope">{{ scope.row.addtime | formatDate}}</template> -->
               </el-table-column>
               <el-table-column
                 prop="status"
-                label="审核状态"
-                :formatter="judge">
+                label="审核状态">
               </el-table-column>
                 <el-table-column
                 prop="admin_name"
                 label="审核操作人">
               </el-table-column>
               <el-table-column
+              prop="check_time"
                 label="审核操作时间" width="200">
-                <template slot-scope="scope">{{ scope.row.check_time | formatDate}}</template>
+                <!-- <template slot-scope="scope">{{ scope.row.check_time | formatDate}}</template> -->
               </el-table-column>
               
               
@@ -211,12 +213,6 @@ export default {
       
     };
   },
-   beforeCreate(){
-    let token = window.sessionStorage.getItem('token');
-    if(token == ''|| token == undefined){
-      this.$router.push('/');
-    }
-  },
   created() {
     this.getData();// 获取列表
     this.getZhandian();// 获取站点
@@ -273,7 +269,39 @@ export default {
         
       });
     },
-
+    is_no() {
+      require.ensure([], () => {
+        const { export_json_to_excel } = require("../../js/Export2Excel");
+        const tHeader = [
+          "冰骑士名称",
+          "银行卡号",
+          "联系电话",
+          "所属转运中心",
+          "提现金额",
+          "提现时间",
+          "审核状态",
+          "审核操作人",
+          "审核操作时间"
+        ];
+        const filterVal = [
+          "relly_name",
+          "bank_coke",
+          "phone",
+          "station",
+          "withdraw_money",
+          "addtime",
+          "status",
+          "admin_name",
+          "check_time"
+        ];
+        const list = this.tableData;
+        const data = this.formatJson(filterVal, list);
+        export_json_to_excel(tHeader, data, "提现审核信息列表");
+      });
+    },
+    formatJson: function(filterVal, jsonData) {
+     return jsonData.map(v => filterVal.map(j => v[j]));
+    },
     isAdd(sta){
         // 审核   打款
         let that = this;
@@ -350,6 +378,23 @@ export default {
         headers: { "Content-Type": "application/x-www-form-urlencoded" }
       }).then(function(res) {
         if(res.data.code == '0'){
+          res.data.data.data.map( v => {
+            switch (v.status){
+              case '0':
+              v.status =  '未审核';
+              break;
+              case '1':
+              v.status =   '已审核';
+              break;
+              case '2':
+              v.status =   '已打款';
+              break;
+            }
+            v.addtime = that.formDate(v.addtime);
+            v.check_time = that.formDate(v.check_time);
+          })
+
+
           that.tableData = res.data.data.data;
           that.ccc = Number(res.data.data.count) || 0;
         }else if(res.data.code == '450'){
@@ -393,6 +438,15 @@ export default {
       })
 
 
+    },
+    formDate(time) {
+        if(time == null){
+            return '';
+        }else{
+            var date = new Date(time * 1000);
+            return formatDate(date, "yyyy-MM-dd hh:mm:ss");
+        }
+      
     }
   },
   filters: {
