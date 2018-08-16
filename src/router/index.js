@@ -86,6 +86,10 @@ export default new Router({
                 {
                     path: '/problem',
                     component: resolve => require(['../components/page/problem.vue'], resolve)     // wen题反馈
+                },
+                {
+                    path: '/tmsOrder',
+                    component: resolve => require(['../components/page/tmsOrder.vue'], resolve)     // TMS订单
                 }
             ]
         },

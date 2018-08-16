@@ -35,7 +35,7 @@
     components:{
 
     },
-    inject: ['reload'],
+    // inject: ['reload'],
     data () {
       return {
       }

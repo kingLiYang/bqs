@@ -60,7 +60,7 @@
               </el-table-column>
               <el-table-column
                 label="添加时间">
-                <template slot-scope="scope">{{ scope.row.addtime | formatDate}}</template>
+                <template slot-scope="scope">{{ scope.row.addtime | formatDate }}</template>
               </el-table-column>
 
               <el-table-column

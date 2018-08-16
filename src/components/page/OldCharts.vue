@@ -1,7 +1,7 @@
 <template>
     <div class="table">
         <div class="divBut">
-
+                                       
             <el-row>
                 <!-- <el-button type="primary" round @click="add()">添加账号</el-button> -->
                 <!-- <el-button type="primary" round @click='edit()'>修改账号</el-button> -->
@@ -31,7 +31,6 @@
           </div>
         </div>
         </div>
-        
            <!-- 表格 -->
              <el-table
               :data="tableData"
@@ -49,6 +48,8 @@
               </el-table-column>
               <el-table-column
                 prop="phone"
+
+                
                 label="手机号">
               </el-table-column>
               <!-- <el-table-column
@@ -196,7 +197,7 @@ export default {
       currentPage: 1
     };
   },
-  created() {
+ created() {
     this.getData(); // 获取列表
     this.getZhandian(); // 获取站点
   },

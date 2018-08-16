@@ -359,6 +359,9 @@ export default {
           
         }else if(res.data.code == '450'){
           that.$message("暂无权限");
+        }else {
+          that.$message(res.data.message+',不能删除');
+          that.dialogVisible = false;
         }
       });
     }
