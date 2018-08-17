@@ -16,6 +16,7 @@
         </div>
 
            <!-- 表格 -->
+           <div style='width: 100%;overflow-x: auto;'>
              <el-table
               :data="tableData">
               <el-table-column
@@ -38,7 +39,7 @@
               <el-table-column
                 label="操作">
 				<template slot-scope="scope">
-                <el-button type="primary" size="small" round>指派</el-button>
+                <el-button type="success" size="small">指派</el-button>
                 </template>
               </el-table-column>
               <el-table-column
@@ -110,7 +111,8 @@
               </el-table-column>
 			  <el-table-column
                 prop="tms_send_goods_address"
-                label="收件地址">
+                label="收件地址"
+                width="420px;">
               </el-table-column>
 			  <el-table-column
                 prop="tms_send_goods_company"
@@ -122,7 +124,8 @@
               </el-table-column>
 			  <el-table-column
                 prop="is_to_pay"
-                label="是否到付">
+                label="是否到付"
+                :formatter="judge">
               </el-table-column>
 			  <el-table-column
                 prop="order_money"
@@ -152,17 +155,16 @@
                 :total="ccc">
             </el-pagination>
         </div> -->
-        
-        <el-dialog title="收货地址" :visible.sync="dialogTableVisible">
-            <div>啦啦啦阿联</div>
+        </div>
+        <el-dialog title="温箱详情" :visible.sync="dialogTableVisible">
             <div v-for="(item,index) in detailsData" :key="index">
-                <p>温度区间：{{item.temperature_interval}}</p>
-                <table>
-                    <tr>
-                        <td>{{item.box_type}}</td>
-                        <td>{{item.box_num}}</td>
-                    </tr>
-                </table>
+                <p style='padding:10px 0;'>温度区间：{{item.temperature_interval}}</p>
+                <ul>
+                    <li v-for="(ite,index) in item.box" :key="index">
+                        <span>{{ite.box_type}}</span>
+                        <span>{{ite.box_num}}</span>
+                    </li>
+                </ul>
             </div>
         </el-dialog>
     </div>
@@ -240,6 +242,17 @@ export default {
         headers: { "Content-Type": "application/x-www-form-urlencoded" }
       }).then(function(res) {
         if(res.data.code == '0'){
+          res.data.data.map( v => {
+            switch (v.is_insure){ // 是否投保
+              case '0':
+              v.is_insure =  '否';
+              v.order_money = '';
+              break;
+              case '1':
+              v.is_insure =   '是';
+              break;
+            }
+          })
           that.tableData = res.data.data;
         //   that.ccc = Number(res.data.data.count) || 0;
         }else if(res.data.code == '450'){
@@ -250,6 +263,9 @@ export default {
         }
         
       });
+    },
+    judge(data){ // 是否到付
+      return Number(data.is_to_pay)==1 ? '是' : '否'
     },
     searchUser() {
       // 查询
@@ -309,30 +325,22 @@ export default {
 .divBut {
   padding: 0 0 10px 0;
 }
-.handle-box {
-  margin-bottom: 20px;
-}
-.handle-select {
-  width: 120px;
-}
-.handle-input {
-  width: 300px;
-  display: inline-block;
-}
-td,
-th {
-  border: solid #ccc;
-  border-width: 0px 1px 1px 0px;
-  padding: 10px 0px;
+li {
   text-align: center;
+  list-style-type: none;
+  width:50%;
+  display: flex;
 }
-
-table {
-  border: solid #ccc;
-  border-width: 1px 0px 0px 1px;
-  border-collapse: collapse;
+li span{
+    border:1px  solid #ccc;
+    width:50%;
+    padding:5px;
 }
 .el-table{
 	min-width:5000px;
+}
+.el-table__body tbody tr td:nth-child(22){
+    /* width:800px; */
+    border:1px solid red;
 }
 </style>
